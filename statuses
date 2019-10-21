@@ -1,0 +1,98 @@
+#! /usr/bin/env bash
+
+##############################################################################
+## Settings
+##############################################################################
+export DIR_WORKING_PATH="${DIR_WORKING_PATH:-/tmp}"
+export DIR_ANYBAR_INSTALL_PATH="${DIR_WORKING_PATH}/AnyBar.app"
+export FILE_ANYBAR_TMP_ZIP="${DIR_WORKING_PATH}/anybar.tmp.zip"
+export FIVE_DAYS_IN_SECONDS=$((86400 * 5))
+export URL_ANYBAR_DOWNLOAD_ZIP="https://github.com/tonsky/AnyBar/releases/download/0.1.4/AnyBar-0.1.4.zip"
+
+##############################################################################
+## AnyBar Helpers
+##############################################################################
+# Function: install_anybar
+#
+# Install AnyBar if not already installed
+install_anybar() {
+  pushd "${DIR_WORKING_PATH}" > /dev/null
+  curl -L -s -o "${FILE_ANYBAR_TMP_ZIP}" "${URL_ANYBAR_DOWNLOAD_ZIP}"
+  unzip "${FILE_ANYBAR_TMP_ZIP}"
+  # Strip security from app
+  xattr -dr com.apple.quarantine "${DIR_ANYBAR_INSTALL_PATH}"
+  popd > /dev/null
+}
+
+
+# Function: run_anybar <port>
+#
+# Install & Run AnyBar on <port>
+# Will punt if port detected to be in-use
+run_anybar() {
+  ANYBAR_PORT=${1:-1738}
+  # Done installing?
+  ([ "${ANYBAR_INSTALLING}" != "${ANYBAR_PORT}" ] \
+    || netstat -an | grep udp | grep ${ANYBAR_PORT} > /dev/null) && unset ANYBAR_INSTALLING
+  # Port used? - Silently skip install
+  netstat -an | grep udp | grep ${ANYBAR_PORT} > /dev/null && return
+  # Install if necessary
+  [ -d "${DIR_ANYBAR_INSTALL_PATH}" ] || install_anybar
+
+  pushd "${DIR_WORKING_PATH}" > /dev/null
+  [ -z "${ANYBAR_INSTALLING}" ] && ANYBAR_PORT="${ANYBAR_PORT}" open -na "${DIR_ANYBAR_INSTALL_PATH}"
+  ANYBAR_INSTALLING="${ANYBAR_PORT}"
+  popd > /dev/null
+}
+
+# Function: anybar <command> <port>
+#
+# Change the status of the anybar icon
+# running on 'port'
+anybar() {
+  ANYBAR_COMMAND="${1:-white}"
+  ANYBAR_PORT="${2:-1738}"
+  run_anybar "${ANYBAR_PORT}"
+  echo -n "${ANYBAR_COMMAND}" | nc -4u -w0 localhost "${ANYBAR_PORT}";
+}
+
+# Function: anybar_good
+#
+# Wrapper to flip anybar to green
+anybar_good() {
+  anybar "green" "${1}"
+}
+
+# Function: anybar_bad
+#
+# Wrapper to flip anybar to exclamation
+anybar_bad() {
+  anybar "exclamation" "${1}"
+}
+
+# Function: anybar_warn
+#
+# Wrapper to flip anybar to red
+anybar_warn() {
+  anybar "red" "${1}"
+}
+
+# [ -n "${HIPCHAT_MENTION_NAME}" ] && set_anybar_status_for_my_devdb
+
+statusAnything() {
+  export PORT_ANYBAR_STATUS_ANYTHING="5959"
+  anybar_good "${PORT_ANYBAR_STATUS_ANYTHING}"
+  $*
+  anybar_bad "${PORT_ANYBAR_STATUS_ANYTHING}"
+}
+
+cat << EOF >> "${BENVIRONMENT_HELP_FILE}"
+${blue}
+${white}## Status Anything
+${blue}
+-   ${white}statusAnything \$cmd \$args ${blue}
+    Runs any command and leaves a status bar indicator
+    on your menu bar while the command is running.  Green
+    while the command runs and red when it stops
+
+EOF
