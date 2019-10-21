@@ -38,5 +38,6 @@ keyme () {
   [ -d $HOME/.ssh ] && rm -rf $HOME/.ssh
   ln -s "${TMP_SSH_KEY_DIR}" "${HOME}/.ssh"
   add_key 752171641075538350 starphleet
+  add_key 5865485107721325531 glguser
   add_key 3769591339365171750 id_rsa
 }

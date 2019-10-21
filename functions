@@ -672,8 +672,8 @@ admin() {
   ssh -i "${HOME}/.ssh/glguser" "ubuntu@${1}"
 }
 
-db() {
-  ssh -i "${HOME}/.ssh/devdb" "ubuntu@${1}"
+starphleet() {
+  ssh -i "${HOME}/.ssh/starphleet" "ubuntu@${1}"
 }
 
 hack_root() {
