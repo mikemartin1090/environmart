@@ -12,6 +12,7 @@
 # Navigation
 #############################################################################
 alias ssh='ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null'
+alias cdg='cd "${DIR_GLG}"'
 # ls shortcuts
 # alias ls='ls -G'
 # alias ll='ls -lh'
