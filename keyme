@@ -37,10 +37,6 @@ keyme () {
   echo Purging "${HOME}/.ssh"
   [ -d $HOME/.ssh ] && rm -rf $HOME/.ssh
   ln -s "${TMP_SSH_KEY_DIR}" "${HOME}/.ssh"
-  add_key 4318807893850238648 glguser
-  add_key 8764128140835055732 starphleet
-  add_key 5866756601936395183 githubdevopsuser
-  add_key 5251408404796459452 id_rsa
-  add_key 1175375113105532471 devship
-  add_key 8409250839622491492 devdb
+  add_key 752171641075538350 starphleet
+  add_key 3769591339365171750 id_rsa
 }
