@@ -127,7 +127,7 @@ function colortest {
   echo
 }
 
-cat << EOF >> "${BENVIRONMENT_HELP_FILE}"
+cat << EOF >> "${ENVIRONMART_HELP_FILE}"
 ${white}
 ${white}## Colors
 ${blue}

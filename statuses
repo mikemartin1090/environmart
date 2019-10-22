@@ -86,7 +86,7 @@ statusAnything() {
   anybar_bad "${PORT_ANYBAR_STATUS_ANYTHING}"
 }
 
-cat << EOF >> "${BENVIRONMENT_HELP_FILE}"
+cat << EOF >> "${ENVIRONMART_HELP_FILE}"
 ${blue}
 ${white}## Status Anything
 ${blue}

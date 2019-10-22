@@ -203,11 +203,11 @@ function envme() {
 }
 
 rl() {
-  for file in $(echo $BENVIRONMENT_FILES_TO_LOAD); do
+  for file in $(echo $ENVIRONMART_FILES_TO_LOAD); do
     FILE_CACHE_ALIASES="/tmp/.${file}"
     [ -f "${FILE_CACHE_ALIASES}" ] && rm "${FILE_CACHE_ALIASES}" && echo "Purged ${FILE_CACHE_ALIASES}"
   done
-  curl -s "${URL_PATH_TO_ENV_FILES}/.benvironment" -o "${HOME}/.benvironment"
+  curl -s "${URL_PATH_TO_ENV_FILES}/.environmart" -o "${HOME}/.environmart"
   zsh
 }
 
@@ -755,19 +755,6 @@ devdb () {
 #  Connect to which server:
 #   1) virginia.glgresearch.com
 #   2) singapore.glgresearch.com
-#   3) jobs.glgresearch.com
-#   4) email.glgresearch.com
-#   5) benjaminhudgens.glgresearch.com
-#   6) bulkmail.glgresearch.com
-#   7) notsplunk.glgresearch.com
-#   8) syslog.glgresearch.com
-#   9) accounting.glgresearch.com
-#  10) vpcvirginia.glgresearch.com
-#  11) vpcsingapore.glgresearch.com
-#  12) china.glgresearch.com
-#  13) moserca.glgresearch.com
-#  14) marklar.glgresearch.com
-#  15) services-buildserver.glgresearch.com
 #?
 ##########################################################
 sc () {
@@ -790,7 +777,7 @@ p () {
 }
 
 
-cat << EOF >> "${BENVIRONMENT_HELP_FILE}"
+cat << EOF >> "${ENVIRONMART_HELP_FILE}"
 ${white}
 ${white}## Functions - Useful Helpers
 ${blue}
