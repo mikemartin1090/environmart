@@ -40,4 +40,5 @@ keyme () {
   add_key 752171641075538350 starphleet
   add_key 5865485107721325531 glguser
   add_key 3769591339365171750 id_rsa
+  add_key 1175375113105532471 devship
 }
