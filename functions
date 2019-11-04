@@ -668,12 +668,16 @@ cat << EOF > ./.eslintrc.json
 EOF
 }
 
-admin() {
+glguser() {
   ssh -i "${HOME}/.ssh/glguser" "ubuntu@${1}"
 }
 
 starphleet() {
   ssh -i "${HOME}/.ssh/starphleet" "ubuntu@${1}"
+}
+
+devship() {
+  ssh -i "${HOME}/.ssh/devship" "ubuntu@${1}"
 }
 
 hack_root() {
