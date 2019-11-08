@@ -25,7 +25,7 @@ export KEYME_KEYS_TO_LOAD="
 
 [ -f "${ENVIRONMART_HELP_FILE}" ] && rm "${ENVIRONMART_HELP_FILE}"
 
-ENVIRONMART_FILES_TO_LOAD="${ENVIRONMART_FILES_TO_LOAD:-functions aliases keyme}"
+ENVIRONMART_FILES_TO_LOAD="${ENVIRONMART_FILES_TO_LOAD:-functions aliases keyme azure}"
 
 mkdir -p "${HOME}/run"
 for file in $(echo $ENVIRONMART_FILES_TO_LOAD); do
