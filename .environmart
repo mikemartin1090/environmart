@@ -14,6 +14,15 @@ export ENVIRONMART_HELP_FILE="/tmp/.environmart.help.md"
 export GOPATH=$HOME/gocode
 export PATH=$PATH:$(go env GOPATH)/bin
 
+#keys to load
+export KEYME_KEYS_TO_LOAD="
+752171641075538350 starphleet
+5865485107721325531 glguser
+3769591339365171750 id_rsa
+1175375113105532471 devship
+8409250839622491492 devdb
+"
+
 [ -f "${ENVIRONMART_HELP_FILE}" ] && rm "${ENVIRONMART_HELP_FILE}"
 
 ENVIRONMART_FILES_TO_LOAD="${ENVIRONMART_FILES_TO_LOAD:-functions aliases keyme}"
