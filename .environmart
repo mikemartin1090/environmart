@@ -7,6 +7,7 @@ export DIR_STARPHLEET_DEV="${HOME}/starphleet_dev"
 export DIR_STARPHLEET_DATA="${HOME}/starphleet_data"
 export DIR_CODE="${HOME}/code"
 export DIR_PERSONAL="${HOME}/code/public"
+export DIR_TERRAFORM="${HOME}/code/terraform"
 export URL_PATH_TO_ENV_FILES="https://raw.githubusercontent.com/mikemartin1090/environmart/master"
 export ENVIRONMART_HELP_FILE="/tmp/.environmart.help.md"
 

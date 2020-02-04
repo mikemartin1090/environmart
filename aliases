@@ -13,6 +13,8 @@
 #############################################################################
 alias ssh='ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null'
 alias cdg='cd "${DIR_GLG}"'
+alias cdp='cd "${DIR_PERSONAL}"'
+alias cdp='cd "${DIR_TERRAFORM}"'
 # ls shortcuts
 # alias ls='ls -G'
 # alias ll='ls -lh'
