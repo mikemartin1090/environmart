@@ -1,4 +1,5 @@
 #! /usr/bin/env bash
+RPROMPT='[%D{%L:%M:%S}] '$RPROMPT
 
 export DIR_REVERTS="${HOME}/reverts"
 export DIR_GLG="${HOME}/code/glg"
