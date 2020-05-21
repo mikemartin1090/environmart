@@ -1,5 +1,5 @@
 #! /usr/bin/env bash
-URL_TO_LIVETAIL="https://github.com/SumoLogic/livetail-cli/releases/download/2.1/livetail.zip"
+URL_TO_LIVETAIL="https://github.com/SumoLogic/livetail-cli/releases/download/2.1/livetail_mac_os.zip"
 INSTALL_PATH="${HOME}/run/livetail"
 
 #########################################################
