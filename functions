@@ -829,3 +829,17 @@ ${blue}
     Drop a default eslint file in the current dir
 
 EOF
+
+##########################################################
+# Cluster Services - view what services are running on an
+# ECS cluster
+#
+# Example:
+#  ➜  ~ clusterservices v1-87
+#?
+##########################################################
+function clusterservices {
+ CLUSTER=${1}
+ FMT='s|arn:.*:service/'${CLUSTER}'_(.?)|$1|'
+ aws ecs list-services --cluster "${CLUSTER}" | jq -r '.serviceArns[]' | perl -pe "${FMT}" | sort
+}
