@@ -840,6 +840,6 @@ EOF
 ##########################################################
 function clusterservices {
  CLUSTER=${1}
- FMT='s|arn:.*:service/'${CLUSTER}'_(.?)|$1|'
+ FMT='s|arn:.*'${CLUSTER}'_(.?)|$1|'
  aws ecs list-services --cluster "${CLUSTER}" | jq -r '.serviceArns[]' | perl -pe "${FMT}" | sort
 }
