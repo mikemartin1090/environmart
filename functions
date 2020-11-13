@@ -864,11 +864,8 @@ awspro () {
   echo "Which profile?"
 
   select profile in $(egrep "profile " "$PROFILE_CONFIG_ON_DISK" | awk '{print $2}' | sed 's/]$//'); do
-    echo We will set this profile: $profile
+    echo Your AWS_PROFILE is now set to: $profile
     export AWS_PROFILE=${profile}
     break;
   done
-
-  # export that selected profile as an environment variable
-  export AWS_PROFILE=${profile}
 }
