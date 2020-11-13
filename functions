@@ -843,3 +843,32 @@ function clusterservices {
  FMT='s|arn:.*'${CLUSTER}'_(.?)|$1|'
  aws ecs list-services --cluster "${CLUSTER}" | jq -r '.serviceArns[]' | perl -pe "${FMT}" | sort
 }
+
+##########################################################
+# AWS Profile selector
+#
+# When using AWS SSO, we will likely have multiple profiles setup. I'd like
+# to simplify selecting ~what~ profile I'll be working with in that terminal.
+#
+# Example:
+#  ➜  ~ awspro
+#  Which profile?
+#   1) Development-ReadOnly
+#   2) Prototype-Administrator
+#?
+##########################################################
+awspro () {
+  # The profiles I have setup on disk
+  PROFILE_CONFIG_ON_DISK="$HOME/.aws/config"
+  # select options 1-n of profiles you have
+  echo "Which profile?"
+
+  select profile in $(egrep "profile " "$PROFILE_CONFIG_ON_DISK" | awk '{print $2}' | sed 's/]$//'); do
+    echo We will set this profile: $profile
+    export AWS_PROFILE=${profile}
+    break;
+  done
+
+  # export that selected profile as an environment variable
+  export AWS_PROFILE=${profile}
+}
