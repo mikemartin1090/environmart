@@ -3,6 +3,7 @@ RPROMPT='[%D{%L:%M:%S}] '$RPROMPT
 
 export DIR_REVERTS="${HOME}/reverts"
 export DIR_GLG="${HOME}/code/glg"
+export DIR_GLG_INFRASTRUCTURE="${DIR_GLG}/aws-infrastructure"
 export DIR_STARPHLEET="${DIR_REVERTS}/starphleet"
 export DIR_STARPHLEET_DEV="${HOME}/starphleet_dev"
 export DIR_STARPHLEET_DATA="${HOME}/starphleet_data"
