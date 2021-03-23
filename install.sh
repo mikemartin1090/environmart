@@ -45,7 +45,7 @@ main() {
       fi
 
       echo Installing environmart into ${env_file}
-      echo "source ${ENVIRONMART_LOAD_FILE}" >> "${HOME}/${env_file}"
+      echo "source ${HOME}/${ENVIRONMART_LOAD_FILE}" >> "${HOME}/${env_file}"
     fi
   done
   echo All Done! Open a new window!
