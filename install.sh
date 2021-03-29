@@ -6,7 +6,7 @@ main() {
   for env_file in $(echo $ENVS); do
     if ! grep "${FILE}" "${HOME}/${env_file}" > /dev/null; then
       echo Installing environmart into ${env_file}
-      echo "source ${FILE}" >> "${HOME}/${env_file}"
+      echo "source ${HOME}/${FILE}" >> "${HOME}/${env_file}"
     fi
   done
   echo All Done! Open a new window!
