@@ -19,7 +19,7 @@ export PATH=$PATH:$(go env GOPATH)/bin
 
 [ -f "${ENVIRONMART_HELP_FILE}" ] && rm "${ENVIRONMART_HELP_FILE}"
 
-ENVIRONMART_FILES_TO_LOAD="${ENVIRONMART_FILES_TO_LOAD:-functions aliases keyme azure livetail}"
+ENVIRONMART_FILES_TO_LOAD="${ENVIRONMART_FILES_TO_LOAD:-functions aliases keyme azure livetail awskeys}"
 
 mkdir -p "${HOME}/run"
 for file in $(echo $ENVIRONMART_FILES_TO_LOAD); do
