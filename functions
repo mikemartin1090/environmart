@@ -869,3 +869,8 @@ awspro () {
     break;
   done
 }
+
+# which tools
+function _which () {
+  which $1 > /dev/null
+}

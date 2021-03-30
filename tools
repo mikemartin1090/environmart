@@ -172,3 +172,11 @@ if [ ! -f "$HOME/.gitconfig" ]; then
   git config --global user.email "mikemartin1090@gmail.com"
   git config --global user.name "Michael Martin"
 fi
+
+if ! _which fzf \
+&& [ ! -d "$HOME/.fzf" ]; then
+  git clone --depth 1 "https://github.com/junegunn/fzf.git" "$HOME/.fzf"
+  pushd "$HOME/.fzf" > /dev/null
+  "$HOME/.fzf/install" --key-bindings --completion --update-rc
+  popd > /dev/null
+fi
