@@ -1,0 +1,59 @@
+#! /usr/bin/env bash
+
+######### Thoughts
+# I thought a Dockerfile would work, but I realized how would the Docker container know if the camera was on or off...
+
+######### Resources
+# On air zoom thread about developer access: https://devforum.zoom.us/t/on-air-off-air-sign-automation-based-on-users-joining-meetings/18235
+# some guys windows based version of telling if a camera is on https://github.com/nothans/webcam-state
+# using automator to take a picture every minute https://www.macstories.net/tutorials/how-to-turn-your-isight-into-a-security-camera-with-automator/
+# mac automator thread on stack overflow https://stackoverflow.com/questions/60535678/macos-detect-when-camera-is-turned-on-off
+# automator user guide: https://support.apple.com/guide/automator/welcome/mac
+# CLI that I ended up using for the function: https://github.com/sindresorhus/is-camera-on-cli
+
+# "Lifx Personal Access Token" lpass id
+LASTPASS_ID="${LASTPASS_ID:-8319572968352128882}"
+auth_token=$(lpass show --note "${LASTPASS_ID}")
+
+# # get the info of tall lamp by door
+# curl -H "Authorization: Bearer ${auth_token}" \
+#   -X GET "https://api.lifx.com/v1/lights/id:d073d55197fa" \
+#   | jq '.[]'
+
+# turn on and set red on lamp from above
+function on_air_live() {
+  curl -s -H "Authorization: Bearer ${auth_token}" \
+    -X PUT "https://api.lifx.com/v1/lights/id:d073d55197fa/state" \
+    -d "power=on" \
+    -d "color=red" \
+    -d "brightness=1.0" \
+    | jq -r '.results | .[].status'
+}
+
+# This is the log stream of when the camera goes on
+# log stream | grep "AppleCameraAssistant: StartHardwareStream"
+
+# Log stream of camera going off
+# log stream | grep "AppleCameraAssistant: StopHardwareStream"
+
+# turn off lamp from above
+function on_air_no_more() {
+  curl -s -H "Authorization: Bearer ${auth_token}" \
+    -X PUT "https://api.lifx.com/v1/lights/id:d073d55197fa/state" \
+    -d "power=off" \
+    | jq -r '.results | .[].status'
+}
+
+# Mark huggins recommended https://github.com/sindresorhus/is-camera-on-cli
+# npm install --global is-camera-on-cli
+
+while true
+do
+	if is-camera-on ; then
+    echo on
+    on_air_live
+  else
+    on_air_no_more
+  fi
+	sleep 30
+done
