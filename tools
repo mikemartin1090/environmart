@@ -1,28 +1,70 @@
 #! /usr/bin/env bash
 
+function _which() {
+  which $1 > /dev/null
+}
+
+function _punt() {
+  echo "$1"
+  exit 1
+}
+
 # #############################################################################
 # # Software Install - Mac Poo
 # #############################################################################
-# brew_install () {
-#   BREW_CMD="$(which brew)"
-#   if [ ! -f "${BREW_CMD}" ]; then
-#     echo Brew not found
-#     return
-#   fi
+if echo $OSTYPE | grep -i darwin > /dev/null; then
 
-#   BREW_CMD="$1"
-#   which "${BREW_CMD}" > /dev/null
-#   if [ $? -gt 0 ]; then
-#     brew install "${BREW_CMD}"
-#   fi
-# }
+  # cache a list of all brew installed formula
+  INSTALLED_FORMULA=$(brew list)
 
-# if echo $OSTYPE | grep -i darwin > /dev/null; then
-#   # List of the things
-#   brew_install bat
-#   brew_install diff-so-fancy
-#   # Aliases based on successes
-# fi
+  # handle brew install
+  brew_install () {
+    # check if brew is installed at all
+    BREW_CMD="$(which brew)"
+    if [ ! -f "${BREW_CMD}" ]; then
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+    # change variable to formula that is passed
+    BREW_CMD="$1"
+    # check if formula is installed. if not, make it so.
+    if ! echo "${INSTALLED_FORMULA}" | grep "${BREW_CMD}" > /dev/null; then
+      brew install "${BREW_CMD}"
+    fi
+  }
+
+  # handle brew cask install - these are the GUI installs for Mac OS
+  brew_install_cask () {
+    # check if brew is installed at all
+    BREW_CMD="$(which brew)"
+    if [ ! -f "${BREW_CMD}" ]; then
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    fi
+    # change variable to cask that is passed
+    BREW_CMD="$1"
+    # check if formula is installed. if not, make it so.
+    if ! echo "${INSTALLED_FORMULA}" | grep "${BREW_CMD}" > /dev/null; then
+      brew install --cask "${BREW_CMD}"
+    fi
+  }
+
+  # List of the brew items to install
+  brew_install gh
+  brew_install jq
+  brew_install lastpass-cli
+  brew_install wireguard-tools
+
+  # List of the casks to install
+  brew_install_cask balenaetcher
+  brew_install_cask docker
+  brew_install_cask flycut
+  brew_install_cask google-chrome
+  brew_install_cask iterm2
+  brew_install_cask microsoft-office
+  brew_install_cask microsoft-remote-desktop
+  brew_install_cask rectangle
+  brew_install_cask visual-studio-code
+  brew_install_cask zoom
+fi
 
 # #############################################################################
 # # Software Install - Linux Poo
