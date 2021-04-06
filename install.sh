@@ -33,10 +33,6 @@ main() {
 
       fi
 
-      if [ ! -d "$HOME/.oh-my-zsh" ]; then
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-      fi
-
       URL_PATH_TO_ENV_FILES="https://raw.githubusercontent.com/mikemartin1090/environmart/master"
       if [ -f "./${ENVIRONMART_LOAD_FILE}" ]; then
         cp "./${ENVIRONMART_LOAD_FILE}" "${HOME}/${ENVIRONMART_LOAD_FILE}"

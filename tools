@@ -223,3 +223,7 @@ if ! _which fzf \
   "$HOME/.fzf/install" --key-bindings --completion --update-rc
   popd > /dev/null
 fi
+
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+fi
