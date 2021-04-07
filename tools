@@ -216,6 +216,7 @@ fi
 if [ ! -f "$HOME/.gitconfig" ]; then
   git config --global user.email "mikemartin1090@gmail.com"
   git config --global user.name "Michael Martin"
+  git config --global pull.rebase false # merge (the default strategy)
 fi
 
 if ! _which fzf \
