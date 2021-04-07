@@ -63,6 +63,7 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   brew_install_cask microsoft-office
   brew_install_cask microsoft-remote-desktop
   brew_install_cask rectangle
+  brew_install_cask slack
   brew_install_cask visual-studio-code
   brew_install_cask zoom
 fi
