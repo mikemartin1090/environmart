@@ -9,7 +9,6 @@ export DIR_STARPHLEET_DEV="${HOME}/starphleet_dev"
 export DIR_STARPHLEET_DATA="${HOME}/starphleet_data"
 export DIR_CODE="${HOME}/code"
 export DIR_PERSONAL="${HOME}/code/public"
-export DIR_TERRAFORM="${HOME}/.terraform"
 export URL_PATH_TO_ENV_FILES="https://raw.githubusercontent.com/mikemartin1090/environmart/master"
 export ENVIRONMART_HELP_FILE="/tmp/.environmart.help.md"
 
@@ -19,7 +18,7 @@ export PATH=$PATH:$(go env GOPATH)/bin
 
 [ -f "${ENVIRONMART_HELP_FILE}" ] && rm "${ENVIRONMART_HELP_FILE}"
 
-ENVIRONMART_FILES_TO_LOAD="${ENVIRONMART_FILES_TO_LOAD:-functions aliases keyme azure livetail awskeys tools}"
+ENVIRONMART_FILES_TO_LOAD="${ENVIRONMART_FILES_TO_LOAD:-functions aliases keyme azure livetail awskeys tools terraform}"
 
 mkdir -p "${HOME}/run"
 for file in $(echo $ENVIRONMART_FILES_TO_LOAD); do
