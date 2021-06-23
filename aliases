@@ -131,7 +131,7 @@ alias martinaws="aws --profile martinProductions"
 # alias gcmsg='git commit -m'
 # alias gl='git pull'
 # alias gss='git status -s'
-alias aws='docker run --rm -it -v ~/.aws:/root/.aws -v $(pwd):/aws --env AWS_SESSION_TOKEN --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY --env AWS_PAGER="" bhudgens/aws-cli'
+alias aws='docker run --rm -it -v ~/.aws:/root/.aws -v $(pwd):/aws --env AWS_SESSION_TOKEN --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY --env AWS_DEFAULT_REGION --env AWS_PAGER="" bhudgens/aws-cli'
 alias ubuntu='docker run -t -i --rm ubuntu bash'
 alias trusty='docker run -t -i --rm ubuntu:trusty bash'
 
