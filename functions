@@ -882,3 +882,13 @@ function _which () {
 function decode-jwt {
   sed 's/\./\n/g' <<< $(cut -d. -f1,2 <<< $1) | base64 --decode | jq
 }
+
+# curl an endpoint on an infinite loop. example: curl-loop http://url.thing
+function curl-loop {
+  while true; do
+    curl "${1}" \
+    -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36' ;
+    date;
+    sleep 3;
+  done
+}
