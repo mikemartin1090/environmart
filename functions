@@ -877,3 +877,8 @@ awspro () {
 function _which () {
   which $1 > /dev/null
 }
+
+# decode jwt tokens locally instead of pasting them on the internet...
+function decode-jwt {
+  sed 's/\./\n/g' <<< $(cut -d. -f1,2 <<< $1) | base64 --decode | jq
+}
