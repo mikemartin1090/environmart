@@ -201,15 +201,15 @@ fi
 #   git config --global color.diff.whitespace "red reverse"
 # fi
 
-# # Install prettyping
-# if [ ! -f /usr/local/bin/prettyping ]; then
-#   pushd /tmp > /dev/null
-#   curl -s -O https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping
-#   sudo cp prettyping /usr/local/bin
-#   echo Installing prettyping
-#   sudo chmod +x /usr/local/bin/prettyping
-#   popd > /dev/null
-# fi
+# Install prettyping
+if [ ! -f /usr/local/bin/prettyping ]; then
+  pushd /tmp > /dev/null
+  curl -s -O https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping
+  sudo cp prettyping /usr/local/bin
+  echo Installing prettyping
+  sudo chmod +x /usr/local/bin/prettyping
+  popd > /dev/null
+fi
 
 # if [ -f /usr/local/bin/prettyping ]; then
 #   alias ping='prettyping --nolegend'
