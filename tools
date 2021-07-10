@@ -211,9 +211,9 @@ if [ ! -f /usr/local/bin/prettyping ]; then
   popd > /dev/null
 fi
 
-# if [ -f /usr/local/bin/prettyping ]; then
-#   alias ping='prettyping --nolegend'
-# fi
+if [ -f /usr/local/bin/prettyping ]; then
+  alias ping='prettyping --nolegend'
+fi
 
 if [ ! -f "$HOME/.gitconfig" ]; then
   git config --global user.email "mikemartin1090@gmail.com"
