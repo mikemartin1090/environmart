@@ -10,7 +10,7 @@ function _punt() {
 }
 
 # #############################################################################
-# # Software Install - Mac Poo
+# # Software Install - Mac Things
 # #############################################################################
 if echo $OSTYPE | grep -i darwin > /dev/null; then
 
@@ -48,6 +48,7 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   }
 
   # List of the brew items to install
+  brew_install bat
   brew_install gh
   brew_install git
   brew_install jq
