@@ -1,0 +1,39 @@
+#! /usr/bin/env bash
+
+export BW_SESSION_FILE="${XDG_RUNTIME_DIR:-/tmp}/.bwSession"
+export BW_USERNAME="mmartin@glgroup.com"
+
+function _isBwLoggedIn() {
+  ! bw status | jq -r '.userEmail' | grep 'null' > /dev/null
+}
+
+function _bwLogin() {
+  bw login --sso
+}
+
+function _isBwUnlocked() {
+  bw status | jq -r '.status' | grep 'unlocked' > /dev/null
+}
+
+function _bwUnlock() {
+  ! _isBwLoggedIn && _bwLogin
+  [ -f "${BW_SESSION_FILE}" ] && export BW_SESSION=$(cat ${BW_SESSION_FILE})
+  ! _isBwUnlocked && bw unlock --raw > "${BW_SESSION_FILE}"
+  [ -f "${BW_SESSION_FILE}" ] && export BW_SESSION=$(cat ${BW_SESSION_FILE})
+}
+
+function bwGetNote() {
+  local note="$1"
+
+  _bwUnlock
+
+  bw get item "$note" | jq -r ".notes"
+}
+
+function bwGetItem() {
+  local item="$1"
+
+  _bwUnlock
+
+  bw get item "$item"
+}
