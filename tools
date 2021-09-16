@@ -217,6 +217,7 @@ if [ -f /usr/local/bin/prettyping ]; then
   alias ping='prettyping --nolegend'
 fi
 
+# Global git config
 if [ ! -f "$HOME/.gitconfig" ]; then
   git config --global user.email "mikemartin1090@gmail.com"
   git config --global user.name "Michael Martin"
@@ -224,6 +225,7 @@ if [ ! -f "$HOME/.gitconfig" ]; then
   git config --global init.defaultBranch main
 fi
 
+# Install fuzzy finder
 if ! _which fzf \
 && [ ! -d "$HOME/.fzf" ]; then
   git clone --depth 1 "https://github.com/junegunn/fzf.git" "$HOME/.fzf"
@@ -232,10 +234,27 @@ if ! _which fzf \
   popd > /dev/null
 fi
 
+# Install oh my zsh
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
 
+# Install NVM
 if ! _which nvm; then
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+fi
+
+# Install AWS CLI
+if ! _which aws; then
+  pushd /tmp > /dev/null
+  curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"                                                                         [11:59:22]
+  sudo installer -pkg AWSCLIV2.pkg -target /
+  popd > /dev/null
+fi
+
+# Configure AWS CLI auto-complete
+if _which aws; then
+  autoload bashcompinit && bashcompinit
+  autoload -Uz compinit && compinit
+  complete -C '/usr/local/bin/aws_completer' aws
 fi
