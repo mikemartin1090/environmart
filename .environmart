@@ -13,8 +13,8 @@ export URL_PATH_TO_ENV_FILES="https://raw.githubusercontent.com/mikemartin1090/e
 export ENVIRONMART_HELP_FILE="/tmp/.environmart.help.md"
 
 #my go path
-export GOPATH=$HOME/gocode
-export PATH=$PATH:$(go env GOPATH)/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
 
 [ -f "${ENVIRONMART_HELP_FILE}" ] && rm "${ENVIRONMART_HELP_FILE}"
 
