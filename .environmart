@@ -13,6 +13,9 @@ export URL_PATH_TO_ENV_FILES="https://raw.githubusercontent.com/mikemartin1090/e
 export ENVIRONMART_HELP_FILE="/tmp/.environmart.help.md"
 
 #my go path
+#TODO: maybe move this elsewhere? Tools? I'll need to do something
+# to create the directories we are referencing here:
+# mkdir ~/go mkdir ~/go/bin mkdir ~/go/src
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 
