@@ -1,7 +1,66 @@
-#! /usr/bin/env bash
+#!/bin/bash
 
 export BW_SESSION_FILE="${XDG_RUNTIME_DIR:-/tmp}/.bwSession"
-export BW_USERNAME="mmartin@glgroup.com"
+
+#####################################################################
+## Keychain things
+# I'll be storing the API keys I need or Bitwarden in the mac os x
+# keychain instead of in a .zsh file
+#####################################################################
+# Help on keychain here: https://scriptingosx.com/2021/04/get-password-from-keychain-in-shell-scripts/
+
+keychain_location="mmartin-testing-bw-login.keychain-db"
+bw_username_combo="bw-cli-username-password"
+
+get_keychain_username() {
+    # $1 is the path to the keychain
+    # $2 is the service name (key name)
+    security find-generic-password -s $2 -g $1 2>&1 | grep "acct" | cut -d \" -f 4
+}
+
+get_keychain_password() {
+    # $1 is the path to the keychain
+    # $2 is the service name
+    security find-generic-password -s $2 -g $1 2>&1 | grep "password:" | cut -d \" -f 2
+}
+
+confirm_environment_is_set() {
+    # unlock the keychain
+    if [[ ! $BW_KEYCHAIN_PASS ]]; then
+        echo "BW_KEYCHAIN_PASS environment variable not found. Please set it here:"
+        echo
+        echo "~/.zshrc"
+        echo
+        exit 1
+    fi
+}
+
+lock_keychain() {
+    # lock the keychain
+    security lock-keychain $keychain_location
+}
+
+# Main
+generate_bw_session_file() {
+
+    confirm_environment_is_set
+
+    # $1 is the service name
+    # security unlock-keychain -p $BW_KEYCHAIN_PASS $keychain_location
+    security unlock-keychain -p $BW_KEYCHAIN_PASS $keychain_location
+
+    # export values from the keychain
+    export BW_USERNAME=$( get_keychain_username $keychain_location $bw_username_combo )
+    export BW_PASSWORD=$( get_keychain_password $keychain_location $bw_username_combo )
+
+    lock_keychain
+
+    bw unlock --passwordenv BW_PASSWORD --raw > "${BW_SESSION_FILE}"
+}
+
+#####################################################################
+## Bitwarden things
+#####################################################################
 
 function _isBwLoggedIn() {
   ! bw status | jq -r '.userEmail' | grep 'null' > /dev/null
@@ -18,7 +77,7 @@ function _isBwUnlocked() {
 function _bwUnlock() {
   ! _isBwLoggedIn && _bwLogin
   [ -f "${BW_SESSION_FILE}" ] && export BW_SESSION=$(cat ${BW_SESSION_FILE})
-  ! _isBwUnlocked && bw unlock --raw > "${BW_SESSION_FILE}"
+  ! _isBwUnlocked && generate_bw_session_file
   [ -f "${BW_SESSION_FILE}" ] && export BW_SESSION=$(cat ${BW_SESSION_FILE})
 }
 
