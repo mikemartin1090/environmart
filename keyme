@@ -39,13 +39,13 @@ TMP_SSH_KEY_DIR="/tmp/.ssh"
 add_key () {
   echo Installing Key: $2
   bwGetItem "$1" | jq -r '.notes' > "${TMP_SSH_KEY_DIR}/$2"
-  # bwGetItem "$1" | jq -r '.fields[1] .value' > "${TMP_SSH_KEY_DIR}/$1.pub"
-  #TODO: igure this out - not complete
+  #TODO: figure public keys out - not complete
+  # bwGetItem "$1" | jq -r '.fields[1] .value' > "${TMP_SSH_KEY_DIR}/$2.pub"
   # bwGetItem "$1" | jq -r '.fields[] | select(.name=="public") | .value' > "${TMP_SSH_KEY_DIR}/$2.pub" 2> /dev/null
   _purgeIfEmpty "${TMP_SSH_KEY_DIR}/$2"
-  # _purgeIfEmpty "${TMP_SSH_KEY_DIR}/$1.pub"
+  # _purgeIfEmpty "${TMP_SSH_KEY_DIR}/$2.pub"
   _chmod 400 "${TMP_SSH_KEY_DIR}/$2"
-  # _chmod 400 "${TMP_SSH_KEY_DIR}/$1.pub"
+  # _chmod 400 "${TMP_SSH_KEY_DIR}/$2.pub"
 }
 
 keyme () {
