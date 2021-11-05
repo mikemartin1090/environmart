@@ -1,0 +1,107 @@
+#!/bin/bash
+
+export BW_SESSION_FILE="${XDG_RUNTIME_DIR:-/tmp}/.bwSession"
+
+#####################################################################
+## Keychain things
+# I'll be storing the API keys I need or Bitwarden in the mac os x
+# keychain instead of in a .zsh file
+#####################################################################
+# Help on keychain here: https://scriptingosx.com/2021/04/get-password-from-keychain-in-shell-scripts/
+
+keychain_location="mmartin-testing-bw-login.keychain-db"
+bw_username_combo="bw-cli-username-password"
+bw_api_combo="bw-cli-api-key"
+
+get_keychain_username() {
+    # $1 is the path to the keychain
+    # $2 is the service name (key name)
+    security find-generic-password -s $2 -g $1 2>&1 | grep "acct" | cut -d \" -f 4
+}
+
+get_keychain_password() {
+    # $1 is the path to the keychain
+    # $2 is the service name
+    security find-generic-password -s $2 -g $1 2>&1 | grep "password:" | cut -d \" -f 2
+}
+
+confirm_environment_is_set() {
+    # unlock the keychain
+    if [[ ! $BW_KEYCHAIN_PASS ]]; then
+        echo "BW_KEYCHAIN_PASS environment variable not found. Please set it here:"
+        echo
+        echo "~/.zshrc"
+        echo
+        exit 1
+    fi
+}
+
+lock_keychain() {
+    # lock the keychain
+    security lock-keychain $keychain_location
+}
+
+# Main
+generate_bw_session_file() {
+
+    confirm_environment_is_set
+
+    # $1 is the service name
+    # security unlock-keychain -p $BW_KEYCHAIN_PASS $keychain_location
+    security unlock-keychain -p $BW_KEYCHAIN_PASS $keychain_location
+
+    # export values from the keychain
+    export BW_USERNAME=$( get_keychain_username $keychain_location $bw_username_combo )
+    export BW_PASSWORD=$( get_keychain_password $keychain_location $bw_username_combo )
+    # export apiuser=$( get_keychain_username $keychain_location $bw_api_combo )
+    # export apipwd=$( get_keychain_password $keychain_location $bw_api_combo )
+
+    lock_keychain
+
+    bw unlock --passwordenv BW_PASSWORD --raw > "${BW_SESSION_FILE}"
+}
+
+#####################################################################
+## Bitwarden things
+#####################################################################
+
+function _isBwLoggedIn() {
+  ! bw status | jq -r '.userEmail' | grep 'null' > /dev/null
+}
+
+function _bwLogin() {
+  bw login --sso
+}
+
+function _isBwUnlocked() {
+  bw status | jq -r '.status' | grep 'unlocked' > /dev/null
+}
+
+function _bwUnlock() {
+  ! _isBwLoggedIn && _bwLogin
+  [ -f "${BW_SESSION_FILE}" ] && export BW_SESSION=$(cat ${BW_SESSION_FILE})
+  ! _isBwUnlocked && generate_bw_session_file
+  [ -f "${BW_SESSION_FILE}" ] && export BW_SESSION=$(cat ${BW_SESSION_FILE})
+}
+
+function bwGetNote() {
+  local note="$1"
+
+  _bwUnlock
+
+  bw get item "$note" | jq -r ".notes"
+}
+
+function bwGetItem() {
+  local item="$1"
+
+  _bwUnlock
+
+  bw get item "$item"
+}
+
+# # get it running at all...
+# keychain_location="mmartin-testing-bw-login.keychain-db"
+# keyname=("bw-login-json") #create additional entries in the list for each key name
+# security unlock-keychain -p $BW_KEYCHAIN_PASS $keychain_location
+# security find-generic-password -s $keyname -g $keychain_location

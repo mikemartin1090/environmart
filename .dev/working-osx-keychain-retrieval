@@ -1,0 +1,67 @@
+#!/bin/bash
+# This is a random script that I pulled from here: https://github.com/grahampugh/keychain-creds
+# I made my version what I needed in another file...
+
+keychain_location="mmartin-testing-bw-login.keychain-db"
+keyname=("bw-cli-username-password" "bw-cli-api-key") #create additional entries in the list for each key name
+
+get_keychain_username() {
+    # $1 is the path to the keychain
+    # $2 is the service name (key name)
+    security find-generic-password -s $2 -g $1 2>&1 | grep "acct" | cut -d \" -f 4
+}
+
+get_keychain_password() {
+    # $1 is the path to the keychain
+    # $2 is the service name
+    security find-generic-password -s $2 -g $1 2>&1 | grep "password:" | cut -d \" -f 2
+}
+
+get_api_creds() {
+    # $1 is the service name
+
+    security unlock-keychain -p $BW_KEYCHAIN_PASS $keychain_location
+
+    # obtain the username and password from the keychain
+    # If obtaining multiple keys, duplicate these two entries to get the user and password for each key
+    apiuser=$( get_keychain_username $keychain_location $1 )
+    apipwd=$( get_keychain_password $keychain_location $1 )
+
+    keychaincredentials="${apiuser}:${apipwd}"
+    echo $keychaincredentials
+}
+
+unlock_keychain() {
+    # unlock the keychain
+    if [[ ! $BW_KEYCHAIN_PASS ]]; then
+        echo "BW_KEYCHAIN_PASS environment variable not found. Please set it here:"
+        echo
+        echo "~/.zshrc"
+        echo
+        exit 1
+    fi
+}
+
+lock_keychain() {
+    # lock the keychain
+    security lock-keychain $keychain_location
+}
+
+# Main
+
+keychaincredentials=[]
+
+unlock_keychain
+for name in $keyname ; do
+    echo $name
+    keychaincredentials+=$( get_api_creds $name )
+done
+lock_keychain
+
+
+
+# # get it running at all...
+# keychain_location="mmartin-testing-bw-login.keychain-db"
+# keyname=("bw-login-json") #create additional entries in the list for each key name
+# security unlock-keychain -p $BW_KEYCHAIN_PASS $keychain_location
+# security find-generic-password -s $keyname -g $keychain_location
