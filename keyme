@@ -10,14 +10,14 @@ echo '
 Error:  Missing KEYME_KEYS_TO_LOAD Environment
 
 Syntax:
-  $last_pass_id<space>$friendly_name_on_your_disk
+  $bitwarden_id<space>$friendly_name_on_your_disk
 
 Example:
 
 export KEYME_KEYS_TO_LOAD="
-4318234233850238648 example1
-8764128140835055732 example2
-5866756601936395183 id_rsa
+abcc0def-b123-8803-b11d-bc9999f99po0 example1
+abcc0def-b123-8803-b11d-bc9999f99po1 example2
+abcc0def-b123-8803-b11d-bc9999f99po2 id_rsa
 "
 '
 
@@ -49,16 +49,16 @@ _chmod () {
 
 TMP_SSH_KEY_DIR="/tmp/.ssh"
 add_key () {
-  echo Installing Key: $1
+  echo Installing Key: $2
   # lpass show "$1" --field "Private Key" > "${TMP_SSH_KEY_DIR}/$2"
   # lpass show "$1" --field "Public Key" > "${TMP_SSH_KEY_DIR}/$2.pub"
-  bwGetItem "$1" | jq -r '.notes' > "${TMP_SSH_KEY_DIR}/$1"
+  bwGetItem "$1" | jq -r '.notes' > "${TMP_SSH_KEY_DIR}/$2"
   # bwGetItem "$1" | jq -r '.fields[1] .value' > "${TMP_SSH_KEY_DIR}/$1.pub"
   #TODO: igure this out - not complete
   # bwGetItem "$1" | jq -r '.fields[] | select(.name=="public") | .value' > "${TMP_SSH_KEY_DIR}/$2.pub" 2> /dev/null
-  _purgeIfEmpty "${TMP_SSH_KEY_DIR}/$1"
+  _purgeIfEmpty "${TMP_SSH_KEY_DIR}/$2"
   # _purgeIfEmpty "${TMP_SSH_KEY_DIR}/$1.pub"
-  _chmod 400 "${TMP_SSH_KEY_DIR}/$1"
+  _chmod 400 "${TMP_SSH_KEY_DIR}/$2"
   # _chmod 400 "${TMP_SSH_KEY_DIR}/$1.pub"
 }
 
@@ -78,9 +78,9 @@ keyme () {
   ln -s "${TMP_SSH_KEY_DIR}" "${HOME}/.ssh"
   IFS=$'\n'
   for key_and_name in $(echo "${KEYME_KEYS_TO_LOAD}"); do
-    # local id=$(echo $key_and_name | awk '{print $1}')
-    # local name=$(echo $key_and_name | awk '{print $2}')
-    add_key "${key_and_name}"
+    local id=$(echo $key_and_name | awk '{print $1}')
+    local name=$(echo $key_and_name | awk '{print $2}')
+    add_key "${id}" "${name}"
   done
 }
 
