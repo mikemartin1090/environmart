@@ -49,6 +49,7 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
 
   # List of the brew items to install
   brew_install bat
+  brew_install bitwarden-cli
   brew_install gh
   brew_install go
   brew_install git

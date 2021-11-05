@@ -38,3 +38,7 @@ echo "${blue}Type ${lightblue}help${blue} for more help"
 help() {
   echo -ne $(cat ${ENVIRONMART_HELP_FILE} | sed  's/$/\\n/' | sed 's/ /\\a /g')
 }
+
+# Put word of the day somewhere
+# TODO: create its own file and check if it exists first...
+node ~/code/public/word-of-the-day/bin/random-word.js
