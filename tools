@@ -19,7 +19,8 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   # Will this error out on first install since brew is not installed?
   INSTALLED_FORMULA=$(brew list)
 
-  # handle brew instalnpm ()_global {
+  # handle brew instal
+  brew_install ()_global {
     # check if brew is installed at all
     BREW_CMD="$(which brew)"
     if [ ! -f "${BREW_CMD}" ]; then
