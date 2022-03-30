@@ -15,10 +15,11 @@ function _punt() {
 if echo $OSTYPE | grep -i darwin > /dev/null; then
 
   # cache a list of all brew installed formula
+  # TODO: this could be written to disk on first boot to improve the loading of scripts
+  # Will this error out on first install since brew is not installed?
   INSTALLED_FORMULA=$(brew list)
 
-  # handle brew install
-  brew_install () {
+  # handle brew instalnpm ()_global {
     # check if brew is installed at all
     BREW_CMD="$(which brew)"
     if [ ! -f "${BREW_CMD}" ]; then
@@ -242,9 +243,35 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
 fi
 
 # Install NVM
-if ! _which nvm; then
+if [ ! -f "$HOME/.nvm/nvm.sh" ]; then
   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 fi
+
+# handle npm install globals
+# cache a list of all brew installed formula
+# TODO: this could be written to disk on first boot to improve the loading of scripts
+# Will this error out on first install since npm is not installed and kill my script?
+INSTALLED_PACKAGE=$(npm list -g)
+
+npm_install_global () {
+  # check if npm is installed at all
+  NPM_CMD="$(which npm)"
+  if [ ! -f "${NPM_CMD}" ]; then
+    nvm install --lts
+  fi
+  # change variable to package that is passed
+  NPM_CMD="$1"
+  # check if package is installed. if not, make it so.
+  if ! echo "${INSTALLED_PACKAGE}" | grep "${NPM_CMD}" > /dev/null; then
+    npm install -g "${NPM_CMD}"
+  fi
+}
+
+# Install NPM tools globally
+npm_install_global jwt-cli
 
 # Install AWS CLI
 if ! _which aws; then
