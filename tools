@@ -20,7 +20,7 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   INSTALLED_FORMULA=$(brew list)
 
   # handle brew instal
-  brew_install ()_global {
+  brew_install () {
     # check if brew is installed at all
     BREW_CMD="$(which brew)"
     if [ ! -f "${BREW_CMD}" ]; then
