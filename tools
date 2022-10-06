@@ -57,6 +57,7 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   brew_install git
   brew_install jq
   brew_install lastpass-cli
+  brew_install pre-commit
   brew_install the_silver_searcher
   brew_install wireguard-tools
 
