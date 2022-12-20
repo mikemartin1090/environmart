@@ -892,3 +892,63 @@ function curl-loop {
     sleep 3;
   done
 }
+
+# open today's github issue
+function standup {
+  # use the gh cli to search for an issue with todays date in the title
+  # and open it in the browser
+  # https://cli.github.com/manual/gh_issue_list
+  # https://cli.github.com/manual/gh_issue_view
+
+  # accept the repo name as an argument or default to my preferred repo
+  REPO=${1:-"https://github.com/glg/devops-meetings"}
+
+  # if today is thursday after 12pm or friday or saturday or sunday, open the issue for monday
+  if [ $(date +"%u") -ge 4 ] && [ $(date +"%H") -ge 12 ]; then
+    echo "Opening issue for Monday"
+    # monday's date with a little regex to match the format of the issue title
+    ISSUE_TITLE=$(date -v Monday +"%B %-d.* %Y")
+    # pull the issue number from the list of issues (first column)
+    ISSUE_NUMBER=$(gh issue list --repo "$REPO" | grep -E "$ISSUE_TITLE" | awk '{print $1}')
+
+    if [ -z "$ISSUE_NUMBER" ]; then
+      echo "No issue found for $ISSUE_TITLE"
+      exit 1
+    fi
+
+    echo "Opening issue $ISSUE_NUMBER"
+    gh issue view "$ISSUE_NUMBER" --repo "$REPO" --web
+    exit 0
+  fi
+
+  # if the time is after 12pm, open the issue for tomorrow
+  if [ $(date +"%H") -ge 12 ]; then
+    echo "Opening issue for tomorrow"
+    # tomorrow's date with a little regex to match the format of the issue title
+    ISSUE_TITLE=$(date -v +1d +"%B %-d.* %Y")
+    # pull the issue number from the list of issues (first column)
+    ISSUE_NUMBER=$(gh issue list --repo "$REPO" | grep -E "$ISSUE_TITLE" | awk '{print $1}')
+
+    if [ -z "$ISSUE_NUMBER" ]; then
+      echo "No issue found for $ISSUE_TITLE"
+      exit 1
+    fi
+
+    echo "Opening issue $ISSUE_NUMBER"
+    gh issue view "$ISSUE_NUMBER" --repo "$REPO" --web
+  else
+    echo "Opening issue for today"
+    # today's date with a little regex to match the format of the issue title
+    ISSUE_TITLE=$(date +"%B %-d.* %Y")
+    # pull the issue number from the list of issues (first column)
+    ISSUE_NUMBER=$(gh issue list --repo "$REPO" | grep -E "$ISSUE_TITLE" | awk '{print $1}')
+    if [ -z "$ISSUE_NUMBER" ]; then
+      echo "No issue found for $ISSUE_TITLE"
+      exit 1
+    fi
+
+    echo "Opening issue $ISSUE_NUMBER"
+    gh issue view "$ISSUE_NUMBER" --repo "$REPO" --web
+  fi
+
+}
