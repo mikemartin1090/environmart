@@ -906,13 +906,13 @@ function standup {
   # if today is thursday after 12pm or friday or saturday or sunday, open the issue for monday
   if [ $(date +"%u") -ge 4 ] && [ $(date +"%H") -ge 12 ]; then
     echo "Opening issue for Monday"
-    # monday's date with a little regex to match the format of the issue title
-    ISSUE_TITLE=$(date -v Monday +"%B %-d.* %Y")
+    # next monday's date with a little regex to match the format of the issue title
+    ISSUE_DATE=$(date -v +1w -v Monday +"%B %-d.* %Y")
     # pull the issue number from the list of issues (first column)
-    ISSUE_NUMBER=$(gh issue list --repo "$REPO" | grep -E "$ISSUE_TITLE" | awk '{print $1}')
+    ISSUE_NUMBER=$(gh issue list --repo "$REPO" | grep -E "$ISSUE_DATE" | grep -E "Standup|Wha's Happening" | awk '{print $1}')
 
     if [ -z "$ISSUE_NUMBER" ]; then
-      echo "No issue found for $ISSUE_TITLE"
+      echo "No issue found for $ISSUE_DATE"
       exit 1
     fi
 
@@ -925,12 +925,12 @@ function standup {
   if [ $(date +"%H") -ge 12 ]; then
     echo "Opening issue for tomorrow"
     # tomorrow's date with a little regex to match the format of the issue title
-    ISSUE_TITLE=$(date -v +1d +"%B %-d.* %Y")
+    ISSUE_DATE=$(date -v +1d +"%B %-d.* %Y")
     # pull the issue number from the list of issues (first column)
-    ISSUE_NUMBER=$(gh issue list --repo "$REPO" | grep -E "$ISSUE_TITLE" | awk '{print $1}')
+    ISSUE_NUMBER=$(gh issue list --repo "$REPO" | grep -E "$ISSUE_DATE" | grep -E "Standup|Wha's Happening" | awk '{print $1}')
 
     if [ -z "$ISSUE_NUMBER" ]; then
-      echo "No issue found for $ISSUE_TITLE"
+      echo "No issue found for $ISSUE_DATE"
       exit 1
     fi
 
@@ -939,11 +939,11 @@ function standup {
   else
     echo "Opening issue for today"
     # today's date with a little regex to match the format of the issue title
-    ISSUE_TITLE=$(date +"%B %-d.* %Y")
+    ISSUE_DATE=$(date +"%B %-d.* %Y")
     # pull the issue number from the list of issues (first column)
-    ISSUE_NUMBER=$(gh issue list --repo "$REPO" | grep -E "$ISSUE_TITLE" | awk '{print $1}')
+    ISSUE_NUMBER=$(gh issue list --repo "$REPO" | grep -E "$ISSUE_DATE" | grep -E "Standup|Wha's Happening" | awk '{print $1}')
     if [ -z "$ISSUE_NUMBER" ]; then
-      echo "No issue found for $ISSUE_TITLE"
+      echo "No issue found for $ISSUE_DATE"
       exit 1
     fi
 
