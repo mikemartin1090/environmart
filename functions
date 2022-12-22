@@ -918,7 +918,6 @@ function standup {
 
     echo "Opening issue $ISSUE_NUMBER"
     gh issue view "$ISSUE_NUMBER" --repo "$REPO" --web
-    exit 0
   fi
 
   # if the time is after 12pm, open the issue for tomorrow
