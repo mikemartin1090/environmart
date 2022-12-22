@@ -918,10 +918,9 @@ function standup {
 
     echo "Opening issue $ISSUE_NUMBER"
     gh issue view "$ISSUE_NUMBER" --repo "$REPO" --web
-  fi
 
   # if the time is after 12pm, open the issue for tomorrow
-  if [ $(date +"%H") -ge 12 ]; then
+  elif [ $(date +"%H") -ge 12 ]; then
     echo "Opening issue for tomorrow"
     # tomorrow's date with a little regex to match the format of the issue title
     ISSUE_DATE=$(date -v +1d +"%B %-d.* %Y")
@@ -935,6 +934,7 @@ function standup {
 
     echo "Opening issue $ISSUE_NUMBER"
     gh issue view "$ISSUE_NUMBER" --repo "$REPO" --web
+
   else
     echo "Opening issue for today"
     # today's date with a little regex to match the format of the issue title
