@@ -913,7 +913,7 @@ function standup {
 
     if [ -z "$ISSUE_NUMBER" ]; then
       echo "No issue found for $ISSUE_DATE"
-      exit 1
+      return
     fi
 
     echo "Opening issue $ISSUE_NUMBER"
@@ -929,7 +929,7 @@ function standup {
 
     if [ -z "$ISSUE_NUMBER" ]; then
       echo "No issue found for $ISSUE_DATE"
-      exit 1
+      return
     fi
 
     echo "Opening issue $ISSUE_NUMBER"
@@ -943,7 +943,7 @@ function standup {
     ISSUE_NUMBER=$(gh issue list --repo "$REPO" | grep -E "$ISSUE_DATE" | grep -E "Standup|Wha's Happening" | awk '{print $1}')
     if [ -z "$ISSUE_NUMBER" ]; then
       echo "No issue found for $ISSUE_DATE"
-      exit 1
+      return
     fi
 
     echo "Opening issue $ISSUE_NUMBER"
