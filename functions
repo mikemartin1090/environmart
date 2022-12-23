@@ -904,7 +904,7 @@ function standup {
   REPO=${1:-"https://github.com/glg/devops-meetings"}
 
   # if today is thursday after 12pm or friday or saturday or sunday, open the issue for monday
-  if [ $(date +"%u") -ge 4 ] && [ $(date +"%H") -ge 12 ]; then
+  if [ $(date +"%u") -ge 5 ] || ( [ $(date +"%u") = 4 ] && [ $(date +"%H") -ge 12 ] ); then
     echo "Opening issue for Monday"
     # next monday's date with a little regex to match the format of the issue title
     ISSUE_DATE=$(date -v +1w -v Monday +"%B %-d.* %Y")
