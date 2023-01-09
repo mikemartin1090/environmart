@@ -951,3 +951,27 @@ function standup {
   fi
 
 }
+
+##########################################################
+## Delete all things docker from my machine and start fresh
+##########################################################
+purge_docker_everything () {
+  docker stop $(docker container ls -q -a)
+  docker rm $(docker container ls -q -a)
+  docker rmi $(docker images -q) -f
+  docker system prune -af
+  docker network prune -f
+}
+
+##########################################################
+## Get the wiki of a git repo that I'm currently in
+##########################################################
+function get_wiki_repo() {
+  local wikiRepo
+  wikiRepo=$(git remote -v \
+                     | egrep 'origin.*push' \
+                     | awk '{print $2}' \
+                     | perl -pe 's|\.git$|\.wiki\.git|')
+
+  git clone "$wikiRepo" ../$(basename $PWD).wiki
+}
