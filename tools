@@ -56,7 +56,6 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   brew_install go
   brew_install git
   brew_install jq
-  brew_install lastpass-cli
   brew_install the_silver_searcher
   brew_install wireguard-tools
 
@@ -278,7 +277,7 @@ npm_install_global jwt-cli
 # Install AWS CLI
 if ! _which aws; then
   pushd /tmp > /dev/null
-  curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"                                                                         [11:59:22]
+  curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
   sudo installer -pkg AWSCLIV2.pkg -target /
   popd > /dev/null
 fi
