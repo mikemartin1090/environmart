@@ -53,8 +53,13 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   brew_install bat
   brew_install bitwarden-cli
   brew_install gh
-  brew_install go
   brew_install git
+  brew_install go
+  # I am not following my previous convention because I do not have a way to setup
+  # taps. I am fairly confident this should be fine as the first time I run this script
+  # it will make sure that I have brew installed at all.
+  brew tap common-fate/granted
+  brew_install granted
   brew_install jq
   brew_install the_silver_searcher
   brew_install wireguard-tools
@@ -62,11 +67,13 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   # List of the casks to install
   brew_install_cask balenaetcher
   brew_install_cask docker
+  brew_install_cask firefox
   brew_install_cask flycut
   brew_install_cask google-chrome
   brew_install_cask iterm2
   brew_install_cask microsoft-office
   brew_install_cask microsoft-remote-desktop
+  brew_install_cask notion
   brew_install_cask postman
   brew_install_cask powershell
   brew_install_cask raycast
