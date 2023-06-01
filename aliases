@@ -135,7 +135,7 @@ alias martinaws="aws --profile martinProductions"
 alias ubuntu='docker run -t -i --rm ubuntu bash'
 alias trusty='docker run -t -i --rm ubuntu:trusty bash'
 
-if ! echo $OSTYPE | grep -i "darwin"; then
+if ! echo $OSTYPE | grep -i "darwin" 1> /dev/null; then
   alias pbcopy='xsel --clipboard --input'
   alias pbpaste='xsel --clipboard --output'
 fi
