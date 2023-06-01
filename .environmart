@@ -4,9 +4,6 @@ RPROMPT='[%D{%L:%M:%S}] '$RPROMPT
 export DIR_REVERTS="${HOME}/reverts"
 export DIR_GLG="${HOME}/code/glg"
 export DIR_GLG_INFRASTRUCTURE="${DIR_GLG}/aws-infrastructure"
-export DIR_STARPHLEET="${DIR_REVERTS}/starphleet"
-export DIR_STARPHLEET_DEV="${HOME}/starphleet_dev"
-export DIR_STARPHLEET_DATA="${HOME}/starphleet_data"
 export DIR_CODE="${HOME}/code"
 export DIR_PERSONAL="${HOME}/code/public"
 export URL_PATH_TO_ENV_FILES="https://raw.githubusercontent.com/mikemartin1090/environmart/master"
@@ -21,7 +18,7 @@ export PATH=$PATH:$GOPATH/bin
 
 [ -f "${ENVIRONMART_HELP_FILE}" ] && rm "${ENVIRONMART_HELP_FILE}"
 
-ENVIRONMART_FILES_TO_LOAD="${ENVIRONMART_FILES_TO_LOAD:-functions aliases bitwarden keyme azure livetail awskeys tools terraform}"
+ENVIRONMART_FILES_TO_LOAD="${ENVIRONMART_FILES_TO_LOAD:-functions aliases bitwarden keyme tools terraform}"
 
 mkdir -p "${HOME}/run"
 for file in $(echo $ENVIRONMART_FILES_TO_LOAD); do
