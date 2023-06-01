@@ -61,7 +61,11 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   brew tap common-fate/granted
   brew_install granted
   brew_install jq
-  brew_install spacelift-io/spacelift/spacectl
+  # I am not following my previous convention because I do not have a way to setup
+  # taps. I am fairly confident this should be fine as the first time I run this script
+  # it will make sure that I have brew installed at all.
+  brew tap spacelift-io/spacelift
+  brew_install spacectl
   brew_install the_silver_searcher
   brew_install wireguard-tools
 
