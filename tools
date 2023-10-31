@@ -52,6 +52,7 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   # List of the brew items to install
   brew_install bat
   brew_install bitwarden-cli
+  brew_install cloudflared
   brew_install gh
   brew_install git
   brew_install go
@@ -240,6 +241,7 @@ if [ ! -f "$HOME/.gitconfig" ]; then
   git config --global user.name "Mike Martin"
   git config --global pull.rebase false # merge (the default strategy)
   git config --global init.defaultBranch main
+  git config --global url.ssh://git@github.com/.insteadOf https://github.com/
 fi
 
 # Install fuzzy finder
