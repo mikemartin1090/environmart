@@ -40,24 +40,6 @@ lock_keychain() {
     security lock-keychain $keychain_location
 }
 
-# Main
-generate_bw_session_file() {
-
-    confirm_environment_is_set
-
-    # $1 is the service name
-    # security unlock-keychain -p $BW_KEYCHAIN_PASS $keychain_location
-    security unlock-keychain -p $BW_KEYCHAIN_PASS $keychain_location
-
-    # export values from the keychain
-    export BW_USERNAME=$( get_keychain_username $keychain_location $bw_username_combo )
-    export BW_PASSWORD=$( get_keychain_password $keychain_location $bw_username_combo )
-
-    lock_keychain
-
-    bw unlock --passwordenv BW_PASSWORD --raw > "${BW_SESSION_FILE}"
-}
-
 #####################################################################
 ## Bitwarden things
 #####################################################################
@@ -75,10 +57,15 @@ function _isBwUnlocked() {
 }
 
 function _bwUnlock() {
+  confirm_environment_is_set
+  security unlock-keychain -p $BW_KEYCHAIN_PASS $keychain_location
+  BW_PASSWORD=$( get_keychain_password $keychain_location $bw_username_combo )
+  lock_keychain
   ! _isBwLoggedIn && _bwLogin
-  [ -f "${BW_SESSION_FILE}" ] && export BW_SESSION=$(cat ${BW_SESSION_FILE})
-  ! _isBwUnlocked && generate_bw_session_file
-  [ -f "${BW_SESSION_FILE}" ] && export BW_SESSION=$(cat ${BW_SESSION_FILE})
+  if ! _isBwUnlocked
+  then
+      export BW_SESSION="$(bw unlock --raw "$BW_PASSWORD")"
+  fi
 }
 
 function bwGetNote() {
