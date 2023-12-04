@@ -50,6 +50,7 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   }
 
   # List of the brew items to install
+  brew_install awscli
   brew_install bat
   brew_install bitwarden-cli
   brew_install cloudflared
@@ -288,14 +289,6 @@ npm_install_global () {
 
 # Install NPM tools globally
 npm_install_global jwt-cli
-
-# Install AWS CLI
-if ! _which aws; then
-  pushd /tmp > /dev/null
-  curl "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o "AWSCLIV2.pkg"
-  sudo installer -pkg AWSCLIV2.pkg -target /
-  popd > /dev/null
-fi
 
 # Configure AWS CLI auto-complete
 if _which aws; then
