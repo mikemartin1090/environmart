@@ -56,6 +56,7 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   brew_install cloudflared
   brew_install gh
   brew_install git
+  brew_install git-delta
   brew_install go
   # I am not following my previous convention because I do not have a way to setup
   # taps. I am fairly confident this should be fine as the first time I run this script
@@ -243,6 +244,13 @@ if [ ! -f "$HOME/.gitconfig" ]; then
   git config --global pull.rebase false # merge (the default strategy)
   git config --global init.defaultBranch main
   git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+  git config --global core.pager "delta"
+  git config --global interactive.diffFilter "delta --color-only"
+  git config --global delta.navigate true
+  git config --global delta.line-numbers true
+  git config --global delta.side-by-side true
+  git config --global merge.conflictStyle diff3
+  git config --global diff.colorMoved default
 fi
 
 # Install fuzzy finder
