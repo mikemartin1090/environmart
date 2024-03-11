@@ -54,6 +54,7 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   brew_install bat
   brew_install bitwarden-cli
   brew_install cloudflared
+  brew_install coreutils
   brew_install gh
   brew_install git
   brew_install git-delta
