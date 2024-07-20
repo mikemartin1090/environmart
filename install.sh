@@ -41,7 +41,7 @@ main() {
     curl -s "${URL_PATH_TO_ENV_FILES}/${ENVIRONMART_LOAD_FILE}" -o "${HOME}/${ENVIRONMART_LOAD_FILE}"
   fi
 
-  echo Installing environmart into ${env_file}
+  echo "Installing environmart into ${HOME}/.zshrc"
   echo "source ${ENVIRONMART_LOAD_FILE}" >> "${HOME}/.zshrc"
   echo All Done! Open a new window!
 }
