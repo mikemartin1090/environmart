@@ -1,3 +1,4 @@
+#! /usr/bin/env bash
 
 function _osType() {
   local _type="$1"
