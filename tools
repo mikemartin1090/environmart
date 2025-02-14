@@ -70,6 +70,7 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   # it will make sure that I have brew installed at all.
   brew tap spacelift-io/spacelift
   brew_install spacectl
+  brew_install telnet
   brew_install the_silver_searcher
   brew_install wireguard-tools
 
