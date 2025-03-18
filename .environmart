@@ -6,7 +6,7 @@ export DIR_GLG="${HOME}/code/glg"
 export DIR_GLG_INFRASTRUCTURE="${DIR_GLG}/aws-infrastructure"
 export DIR_CODE="${HOME}/code"
 export DIR_PERSONAL="${HOME}/code/public"
-export URL_PATH_TO_ENV_FILES="https://raw.githubusercontent.com/mikemartin1090/environmart/master"
+export URL_PATH_TO_ENV_FILES="https://raw.githubusercontent.com/mikemartin1090/environmart/ubuntu-2025"
 export ENVIRONMART_HELP_FILE="/tmp/.environmart.help.md"
 
 #my go path
