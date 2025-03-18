@@ -246,6 +246,7 @@ if [ ! -f "$HOME/.gitconfig" ]; then
   git config --global pull.rebase false # merge (the default strategy)
   git config --global init.defaultBranch main
   git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+  git config --global core.editor vim
   # git config --global core.pager "delta"
   # git config --global interactive.diffFilter "delta --color-only"
   # git config --global delta.navigate true
