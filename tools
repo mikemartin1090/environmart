@@ -246,13 +246,13 @@ if [ ! -f "$HOME/.gitconfig" ]; then
   git config --global pull.rebase false # merge (the default strategy)
   git config --global init.defaultBranch main
   git config --global url.ssh://git@github.com/.insteadOf https://github.com/
-  git config --global core.pager "delta"
-  git config --global interactive.diffFilter "delta --color-only"
-  git config --global delta.navigate true
-  git config --global delta.line-numbers true
-  git config --global delta.side-by-side true
-  git config --global merge.conflictStyle diff3
-  git config --global diff.colorMoved default
+  # git config --global core.pager "delta"
+  # git config --global interactive.diffFilter "delta --color-only"
+  # git config --global delta.navigate true
+  # git config --global delta.line-numbers true
+  # git config --global delta.side-by-side true
+  # git config --global merge.conflictStyle diff3
+  # git config --global diff.colorMoved default
 fi
 
 # Install fuzzy finder
@@ -269,40 +269,40 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
 
-# Install NVM
-if [ ! -f "$HOME/.nvm/nvm.sh" ]; then
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-fi
+# # Install NVM
+# if [ ! -f "$HOME/.nvm/nvm.sh" ]; then
+#   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+#   export NVM_DIR="$HOME/.nvm"
+#   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# fi
 
-# handle npm install globals
-# cache a list of all brew installed formula
-# TODO: this could be written to disk on first boot to improve the loading of scripts
-# Will this error out on first install since npm is not installed and kill my script?
-INSTALLED_PACKAGE=$(npm list -g)
+# # handle npm install globals
+# # cache a list of all brew installed formula
+# # TODO: this could be written to disk on first boot to improve the loading of scripts
+# # Will this error out on first install since npm is not installed and kill my script?
+# INSTALLED_PACKAGE=$(npm list -g)
 
-npm_install_global () {
-  # check if npm is installed at all
-  NPM_CMD="$(which npm)"
-  if [ ! -f "${NPM_CMD}" ]; then
-    nvm install --lts
-  fi
-  # change variable to package that is passed
-  NPM_CMD="$1"
-  # check if package is installed. if not, make it so.
-  if ! echo "${INSTALLED_PACKAGE}" | grep "${NPM_CMD}" > /dev/null; then
-    npm install -g "${NPM_CMD}"
-  fi
-}
+# npm_install_global () {
+#   # check if npm is installed at all
+#   NPM_CMD="$(which npm)"
+#   if [ ! -f "${NPM_CMD}" ]; then
+#     nvm install --lts
+#   fi
+#   # change variable to package that is passed
+#   NPM_CMD="$1"
+#   # check if package is installed. if not, make it so.
+#   if ! echo "${INSTALLED_PACKAGE}" | grep "${NPM_CMD}" > /dev/null; then
+#     npm install -g "${NPM_CMD}"
+#   fi
+# }
 
-# Install NPM tools globally
-npm_install_global jwt-cli
+# # Install NPM tools globally
+# npm_install_global jwt-cli
 
-# Configure AWS CLI auto-complete
-if _which aws; then
-  autoload bashcompinit && bashcompinit
-  autoload -Uz compinit && compinit
-  complete -C '/usr/local/bin/aws_completer' aws
-fi
+# # Configure AWS CLI auto-complete
+# if _which aws; then
+#   autoload bashcompinit && bashcompinit
+#   autoload -Uz compinit && compinit
+#   complete -C '/usr/local/bin/aws_completer' aws
+# fi
