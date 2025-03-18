@@ -34,7 +34,7 @@ main() {
 
       fi
 
-      URL_PATH_TO_ENV_FILES="https://raw.githubusercontent.com/mikemartin1090/environmart/master"
+      URL_PATH_TO_ENV_FILES="https://raw.githubusercontent.com/mikemartin1090/environmart/ubuntu-2025"
       if [ -f "./${ENVIRONMART_LOAD_FILE}" ]; then
         cp "./${ENVIRONMART_LOAD_FILE}" "${HOME}/${ENVIRONMART_LOAD_FILE}"
       else
