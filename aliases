@@ -14,7 +14,6 @@
 alias ssh='ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null'
 alias cdg='mkdir -p "${DIR_GLG}"; cd "${DIR_GLG}"'
 alias cdp='mkdir -p "${DIR_PERSONAL}"; cd "${DIR_PERSONAL}"'
-alias cdt='mkdir -p "${DIR_TERRAFORM}"; cd "${DIR_TERRAFORM}"'
 alias cdi='mkdir -p "${DIR_GLG_INFRASTRUCTURE}"; cd "${DIR_GLG_INFRASTRUCTURE}"'
 # ls shortcuts
 # alias ls='ls -G'

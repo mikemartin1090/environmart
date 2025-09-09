@@ -71,6 +71,7 @@ if echo $OSTYPE | grep -i darwin > /dev/null; then
   brew tap spacelift-io/spacelift
   brew_install spacectl
   brew_install telnet
+  brew_install tenv
   brew_install the_silver_searcher
   brew_install wireguard-tools
 
