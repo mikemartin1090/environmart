@@ -49,7 +49,13 @@ function azume {
 
             # Finding your "Internal" Profile Name; Chrome doesn't usually name the folders "Work" or "Personal." It uses "Default," "Profile 1," "Profile 2," etc. To find out which is which:
             # Open Chrome with the profile you want to identify, in the address bar, type chrome://version, Look for the Profile Path row, The very last part of that path (e.g., Default or Profile 3) is what you need for your script.
-            open -na "Google Chrome" --args --profile-directory="$($tenantConfig.Profile)"
+
+            # Open Chrome to the Entra portal if not ChromeOnly
+            if ($ChromeOnly) {
+              open -na "Google Chrome" --args --profile-directory="$($tenantConfig.Profile)" "https://entra.microsoft.com"
+            } else {
+              open -na "Google Chrome" --args --profile-directory="$($tenantConfig.Profile)"
+            }
         }
 
         if ($ChromeOnly) { return }
