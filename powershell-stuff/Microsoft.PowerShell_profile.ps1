@@ -1,4 +1,9 @@
 function azume {
+    param(
+        [Alias("c")]
+        [switch]$ChromeOnly
+    )
+
     $tenants = @{
         "Primary" = @{
             Id      = "abc-123-890"
@@ -30,13 +35,6 @@ function azume {
         $tenantConfig = $tenants[$selection]
         $tenantId = $tenantConfig.Id
 
-        # Disconnect previous session to prevent token bleed
-        Write-Host "Disconnecting from previous session..." -ForegroundColor Yellow
-        Disconnect-MgGraph -ErrorAction SilentlyContinue
-
-        # Log in to the specific tenant
-        Write-Host "Connecting to $selection ($tenantId)..." -ForegroundColor Cyan
-
         # Launch the specified Chrome Profile
         if ($tenantConfig.Profile) {
             Write-Host "Launching Chrome Profile: $($tenantConfig.Profile)..." -ForegroundColor Cyan
@@ -52,10 +50,19 @@ function azume {
             # Finding your "Internal" Profile Name; Chrome doesn't usually name the folders "Work" or "Personal." It uses "Default," "Profile 1," "Profile 2," etc. To find out which is which:
             # Open Chrome with the profile you want to identify, in the address bar, type chrome://version, Look for the Profile Path row, The very last part of that path (e.g., Default or Profile 3) is what you need for your script.
             open -na "Google Chrome" --args --profile-directory="$($tenantConfig.Profile)"
-            # sleep 1 second - seems to give me an error if I don't wait a bit
-            Start-Sleep -Seconds 1
         }
 
+        if ($ChromeOnly) { return }
+
+        # sleep 1 second - seems to give me an error if I don't wait a bit
+        if ($tenantConfig.Profile) { Start-Sleep -Seconds 1 }
+
+        # Disconnect previous session to prevent token bleed
+        Write-Host "Disconnecting from previous session..." -ForegroundColor Yellow
+        Disconnect-MgGraph -ErrorAction SilentlyContinue
+
+        # Log in to the specific tenant
+        Write-Host "Connecting to $selection ($tenantId)..." -ForegroundColor Cyan
         Connect-MgGraph -TenantId $tenantId -ContextScope Process -NoWelcome
 
         Write-Host "Connected with the following user:" -ForegroundColor Green
