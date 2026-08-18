@@ -203,12 +203,14 @@ function envme() {
 }
 
 rl() {
-  for file in $(echo $ENVIRONMART_FILES_TO_LOAD); do
+  local file
+
+  for file in $(printf '%s\n' "${ENVIRONMART_FILES_TO_LOAD}"); do
     FILE_CACHE_ALIASES="${HOME}/run/.${file}"
     [ -f "${FILE_CACHE_ALIASES}" ] && rm "${FILE_CACHE_ALIASES}" && echo "Purged ${FILE_CACHE_ALIASES}"
   done
-  curl -s "${URL_PATH_TO_ENV_FILES}/.environmart" -o "${HOME}/.environmart"
-  zsh
+  curl -fsSL "${URL_PATH_TO_ENV_FILES}/.environmart" -o "${HOME}/.environmart" || return 1
+  exec zsh
 }
 
 # app

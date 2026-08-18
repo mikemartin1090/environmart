@@ -1,309 +1,336 @@
 #! /usr/bin/env bash
 
 function _which() {
-  which $1 > /dev/null
+  command -v "$1" > /dev/null 2>&1
+}
+
+function _environmart_has_executable() {
+  if [[ -n "${ZSH_VERSION:-}" ]]; then
+    whence -p "$1" > /dev/null 2>&1
+  else
+    type -P "$1" > /dev/null 2>&1
+  fi
 }
 
 function _punt() {
   echo "$1"
-  exit 1
+  return 1
 }
 
-# #############################################################################
-# # Software Install - Mac Things
-# #############################################################################
-if echo $OSTYPE | grep -i darwin > /dev/null; then
+#############################################################################
+# Lightweight shell setup
+#############################################################################
 
-  # cache a list of all brew installed formula
-  # TODO: this could be written to disk on first boot to improve the loading of scripts
-  # Will this error out on first install since brew is not installed?
-  INSTALLED_FORMULA=$(brew list)
-
-  # handle brew instal
-  brew_install () {
-    # check if brew is installed at all
-    BREW_CMD="$(which brew)"
-    if [ ! -f "${BREW_CMD}" ]; then
-      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    fi
-    # change variable to formula that is passed
-    BREW_CMD="$1"
-    # check if formula is installed. if not, make it so.
-    if ! echo "${INSTALLED_FORMULA}" | grep "${BREW_CMD}" > /dev/null; then
-      brew install "${BREW_CMD}"
-    fi
-  }
-
-  # handle brew cask install - these are the GUI installs for Mac OS
-  brew_install_cask () {
-    # check if brew is installed at all
-    BREW_CMD="$(which brew)"
-    if [ ! -f "${BREW_CMD}" ]; then
-      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    fi
-    # change variable to cask that is passed
-    BREW_CMD="$1"
-    # check if formula is installed. if not, make it so.
-    if ! echo "${INSTALLED_FORMULA}" | grep "${BREW_CMD}" > /dev/null; then
-      brew install --cask "${BREW_CMD}"
-    fi
-  }
-
-  # List of the brew items to install
-  brew_install awscli
-  brew_install bat
-  brew_install bitwarden-cli
-  brew_install cloudflared
-  brew_install coreutils
-  brew_install gh
-  brew_install git
-  brew_install git-delta
-  brew_install go
-  # I am not following my previous convention because I do not have a way to setup
-  # taps. I am fairly confident this should be fine as the first time I run this script
-  # it will make sure that I have brew installed at all.
-  brew tap common-fate/granted
-  brew_install granted
-  brew_install jq
-  # I am not following my previous convention because I do not have a way to setup
-  # taps. I am fairly confident this should be fine as the first time I run this script
-  # it will make sure that I have brew installed at all.
-  brew tap spacelift-io/spacelift
-  brew_install spacectl
-  brew_install telnet
-  brew_install tenv
-  brew_install the_silver_searcher
-  brew_install wireguard-tools
-
-  # List of the casks to install
-  brew_install_cask balenaetcher
-  brew_install_cask docker
-  brew_install_cask firefox
-  brew_install_cask flycut
-  brew_install_cask google-chrome
-  brew_install_cask iterm2
-  brew_install_cask licecap
-  brew_install_cask microsoft-office
-  brew_install_cask notion
-  brew_install_cask postman
-  brew_install_cask powershell
-  brew_install_cask raycast
-  brew_install_cask rectangle
-  brew_install_cask slack
-  brew_install_cask visual-studio-code
-  brew_install_cask vlc
-  brew_install_cask windows-app
-  brew_install_cask zoom
-fi
-
-# #############################################################################
-# # Software Install - Linux Poo
-# #############################################################################
-
-# apt_get_install () {
-#   APP="$(basename $1)"
-#   [ -n "$2" ] && CHECK="$2" || CHECK="$1"
-#   if ! which "$CHECK" > /dev/null; then
-#     [ -z "${RUN_ONCE}" ] && sudo apt-get update -y && RUN_ONCE=true
-#     sudo apt-get install -y $APP
-#   fi
-# }
-
-# npm_install () {
-#   APP="$(basename $1)"
-#   [ -z "$2" ] || APP="$2"
-#   if ! which "${APP}" > /dev/null; then
-#     sudo mkdir -p /usr/lib/node_modules
-#     sudo mkdir -p /usr/local/lib
-#     sudo chown -R "${USER}:${USER}" /usr/lib/node_modules
-#     sudo chown -R "${USER}:${USER}" /usr/local/lib
-#     sudo chown "root:adm" /usr/bin
-#     sudo chmod 775 /usr/bin
-#     sudo chown "root:adm" /usr/local/bin
-#     sudo chmod 775 /usr/local/bin
-#     npm install -g "$1"
-#   fi
-# }
-
-# if echo $OSTYPE | grep -i linux > /dev/null; then
-#   apt_get_install nodejs node
-#   apt_get_install npm
-#   apt_get_install curl
-#   apt_get_install wget
-#   apt_get_install tmux
-#   apt_get_install openvpn
-#   apt_get_install traceroute
-#   apt_get_install strace
-#   apt_get_install jq
-#   apt_get_install silversearcher-ag ag
-#   npm_install "glg-core/vpn-client"
-#   npm_install "git-clone-cli" "clone"
-
-#   if ! which bat > /dev/null; then
-#     pushd /tmp > /dev/null
-#     URL='https://github.com/sharkdp/bat/releases/download/v0.7.1/bat-musl_0.7.1_amd64.deb'
-#     wget "${URL}"
-#     sudo dpkg -i "$(basename ${URL})"
-#     popd >/dev/null
-#   fi
-
-#   if [ ! -L "${HOME}/.zshrc" ] \
-#   && [ -f "${HOME}/Dropbox/syncstuff/.zshrc" ]; then
-#     mv "${HOME}/.zshrc" "${HOME}/.zshrc.bak"
-#     ln -s "${HOME}/Dropbox/syncstuff/.zshrc" "${HOME}/.zshrc"
-#   fi
-
-#   if [ ! -L "/usr/bin/open" ] \
-#   && [ -f "${HOME}/Dropbox/syncstuff/open" ]; then
-#     sudo mv "/usr/bin/open" "/usr/bin/open.bak"
-#     sudo ln -s "${HOME}/Dropbox/syncstuff/open" "/usr/bin/open"
-#   fi
-
-#   if [ -f "${HOME}/.oh-my-zsh/themes/agnoster.zsh-theme" ] \
-#   && ! grep prompt_context "${HOME}/.oh-my-zsh/themes/agnoster.zsh-theme" | grep -v '{' | grep '#' > /dev/null; then
-#     sed -i 's|prompt_context$|# prompt_context$|' "${HOME}/.oh-my-zsh/themes/agnoster.zsh-theme"
-#   fi
-
-#   if [ ! -L "${HOME}/.ssh" ] \
-#   && [ -d "${HOME}/Dropbox/syncstuff/.ssh" ]; then
-#     mv "${HOME}/.ssh" "${HOME}/.ssh.bak"
-#     ln -s "${HOME}/Dropbox/syncstuff/.ssh" "${HOME}/.ssh"
-#     for file in $(echo id_rsa \
-#                        id_dsa \
-#                        glguser \
-#                        beta_bot); do
-#       pushd "${HOME}/.ssh" > /dev/null
-#       chmod 400 "${file}"
-#       popd > /dev/null
-#     done
-#   fi
-
-#   if ! which kitty > /dev/null; then
-#     pushd /tmp > /dev/null
-#     apt_get_install libjs-underscore
-#     apt_get_install libjs-sphinxdoc
-#     for url in $(echo 'http://http.us.debian.org/debian/pool/main/k/kitty/kitty-terminfo_0.11.3-1_all.deb' \
-#                       'http://http.us.debian.org/debian/pool/main/k/kitty/kitty-doc_0.11.3-1_all.deb' \
-#                       'http://http.us.debian.org/debian/pool/main/k/kitty/kitty_0.11.3-1_amd64.deb'); do
-
-#       wget "$url"
-#       sudo dpkg -i "$(basename ${url})"
-#     done
-#     popd
-#   fi
-
-#   if [ ! -L "${HOME}/.config/kitty/kitty.conf" ] \
-#   && [ -f "${HOME}/Dropbox/syncstuff/.config/kitty/kitty.conf" ]; then
-#     mv "${HOME}/.config/kitty/kitty.conf" "${HOME}/.config/kitty/kitty.conf.bak"
-#     ln -s "${HOME}/Dropbox/syncstuff/.config/kitty/kitty.conf" "${HOME}/.config/kitty/kitty.conf"
-#   fi
-
-# fi
-
-# #############################################################################
-# # Global Configs
-# #############################################################################
-
-# # If bat successfully gets installed we will
-# # swap cat with bat
-# if which bat > /dev/null; then
-#   alias cat='bat'
-# fi
-
-# if which diff-so-fancy > /dev/null; then
-#   git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
-#   git config --global color.ui true
-#   git config --global color.diff-highlight.oldNormal    "red bold"
-#   git config --global color.diff-highlight.oldHighlight "red bold 52"
-#   git config --global color.diff-highlight.newNormal    "green bold"
-#   git config --global color.diff-highlight.newHighlight "green bold 22"
-
-#   git config --global color.diff.meta       "yellow"
-#   git config --global color.diff.frag       "magenta bold"
-#   git config --global color.diff.commit     "yellow bold"
-#   git config --global color.diff.old        "red bold"
-#   git config --global color.diff.new        "green bold"
-#   git config --global color.diff.whitespace "red reverse"
-# fi
-
-# Install prettyping
-if [ ! -f /usr/local/bin/prettyping ]; then
-  pushd /tmp > /dev/null
-  curl -s -O https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping
-  sudo cp prettyping /usr/local/bin
-  echo Installing prettyping
-  sudo chmod +x /usr/local/bin/prettyping
-  popd > /dev/null
-fi
-
-if [ -f /usr/local/bin/prettyping ]; then
+# Installation and upgrades are intentionally not run while the shell starts.
+if _which prettyping; then
   alias ping='prettyping --nolegend'
 fi
 
-# Global git config
-if [ ! -f "$HOME/.gitconfig" ]; then
-  git config --global user.email "mikemartin1090@users.noreply.github.com"
-  git config --global user.name "Mike Martin"
-  git config --global pull.rebase false # merge (the default strategy)
-  git config --global init.defaultBranch main
-  git config --global url.ssh://git@github.com/.insteadOf https://github.com/
-  git config --global core.pager "delta"
-  git config --global interactive.diffFilter "delta --color-only"
-  git config --global delta.navigate true
-  git config --global delta.line-numbers true
-  git config --global delta.side-by-side true
-  git config --global merge.conflictStyle diff3
-  git config --global diff.colorMoved default
-fi
+#############################################################################
+# Explicit workstation maintenance
+#############################################################################
 
-# Install fuzzy finder
-if ! _which fzf \
-&& [ ! -d "$HOME/.fzf" ]; then
-  git clone --depth 1 "https://github.com/junegunn/fzf.git" "$HOME/.fzf"
-  pushd "$HOME/.fzf" > /dev/null
-  "$HOME/.fzf/install" --key-bindings --completion --update-rc
-  popd > /dev/null
-fi
+_environmart_brew_formulae='awscli bat bitwarden-cli cloudflared coreutils gh git git-delta go granted jq spacectl telnet tenv the_silver_searcher wireguard-tools'
+_environmart_brew_casks='balenaetcher docker firefox flycut google-chrome iterm2 licecap microsoft-office notion postman powershell raycast rectangle slack visual-studio-code vlc windows-app zoom'
+_environmart_brew_taps='common-fate/granted spacelift-io/spacelift'
 
-# Install oh my zsh
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-fi
+_environmart_ensure_brew() {
+  local brew_path
 
-# Install NVM
-if [ ! -f "$HOME/.nvm/nvm.sh" ]; then
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-fi
-
-# handle npm install globals
-# cache a list of all brew installed formula
-# TODO: this could be written to disk on first boot to improve the loading of scripts
-# Will this error out on first install since npm is not installed and kill my script?
-INSTALLED_PACKAGE=$(npm list -g)
-
-npm_install_global () {
-  # check if npm is installed at all
-  NPM_CMD="$(which npm)"
-  if [ ! -f "${NPM_CMD}" ]; then
-    nvm install --lts
+  if _which brew; then
+    return 0
   fi
-  # change variable to package that is passed
-  NPM_CMD="$1"
-  # check if package is installed. if not, make it so.
-  if ! echo "${INSTALLED_PACKAGE}" | grep "${NPM_CMD}" > /dev/null; then
-    npm install -g "${NPM_CMD}"
+
+  for brew_path in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+    if [ -x "${brew_path}" ]; then
+      eval "$(${brew_path} shellenv)"
+      return 0
+    fi
+  done
+
+  if [[ "${OSTYPE:-}" == darwin* ]]; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || return 1
+    for brew_path in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+      if [ -x "${brew_path}" ]; then
+        eval "$(${brew_path} shellenv)"
+        return 0
+      fi
+    done
+  fi
+
+  echo "Homebrew is not installed."
+  return 1
+}
+
+_environmart_install_formula() {
+  local formula="$1"
+
+  if ! brew list --formula "${formula}" > /dev/null 2>&1; then
+    brew install "${formula}"
   fi
 }
 
-# Install NPM tools globally
-npm_install_global jwt-cli
+_environmart_install_cask() {
+  local cask="$1"
 
-# Configure AWS CLI auto-complete
-if _which aws; then
-  autoload bashcompinit && bashcompinit
-  autoload -Uz compinit && compinit
-  complete -C '/usr/local/bin/aws_completer' aws
-fi
+  if ! brew list --cask "${cask}" > /dev/null 2>&1; then
+    brew install --cask "${cask}"
+  fi
+}
+
+_environmart_install_brew_tools() {
+  local item
+
+  _environmart_ensure_brew || return 1
+
+  for item in ${_environmart_brew_taps}; do
+    if ! brew tap-info --installed "${item}" > /dev/null 2>&1; then
+      brew tap "${item}" || return 1
+    fi
+  done
+
+  for item in ${_environmart_brew_formulae}; do
+    _environmart_install_formula "${item}" || return 1
+  done
+
+  for item in ${_environmart_brew_casks}; do
+    _environmart_install_cask "${item}" || return 1
+  done
+}
+
+_environmart_install_prettyping() {
+  local target="${HOME}/.local/bin/prettyping"
+
+  _which prettyping && return 0
+  mkdir -p "${HOME}/.local/bin" || return 1
+  curl -fsSL https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping -o "${target}" || return 1
+  chmod +x "${target}"
+}
+
+_environmart_configure_git() {
+  if [ ! -f "${HOME}/.gitconfig" ]; then
+    git config --global user.email "mikemartin1090@users.noreply.github.com"
+    git config --global user.name "Mike Martin"
+    git config --global pull.rebase false
+    git config --global init.defaultBranch main
+    git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+    git config --global core.pager "delta"
+    git config --global interactive.diffFilter "delta --color-only"
+    git config --global delta.navigate true
+    git config --global delta.line-numbers true
+    git config --global delta.side-by-side true
+    git config --global merge.conflictStyle diff3
+    git config --global diff.colorMoved default
+  fi
+}
+
+_environmart_install_fzf() {
+  if _which fzf || [ -d "${HOME}/.fzf" ]; then
+    return 0
+  fi
+
+  git clone --depth 1 "https://github.com/junegunn/fzf.git" "${HOME}/.fzf" || return 1
+  pushd "${HOME}/.fzf" > /dev/null || return 1
+  "${HOME}/.fzf/install" --key-bindings --completion --no-update-rc
+  local result="$?"
+  popd > /dev/null
+  return "${result}"
+}
+
+_environmart_install_oh_my_zsh() {
+  if [ -d "${HOME}/.oh-my-zsh" ]; then
+    return 0
+  fi
+
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+}
+
+_environmart_install_nvm() {
+  export NVM_DIR="${NVM_DIR:-${HOME}/.nvm}"
+
+  if [ ! -s "${NVM_DIR}/nvm.sh" ]; then
+    PROFILE=/dev/null bash -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh)" || return 1
+  fi
+
+  _environmart_load_nvm || return 1
+
+  if ! _environmart_has_executable npm; then
+    nvm install --lts --default || return 1
+    nvm use --silent default > /dev/null || return 1
+  fi
+}
+
+_environmart_load_nvm() {
+  export NVM_DIR="${NVM_DIR:-${HOME}/.nvm}"
+  unset -f nvm node npm npx corepack jwt 2> /dev/null || true
+
+  if [ ! -s "${NVM_DIR}/nvm.sh" ]; then
+    echo "NVM is not installed. Run environmart_install_tools first." >&2
+    return 1
+  fi
+
+  . "${NVM_DIR}/nvm.sh"
+}
+
+_environmart_use_nvm() {
+  _environmart_load_nvm || return 1
+  nvm use --silent default > /dev/null 2>&1 || nvm use --silent node > /dev/null 2>&1 || return 1
+}
+
+# Keep Node tooling available without paying the NVM startup cost in every shell.
+nvm() {
+  _environmart_load_nvm || return 1
+  nvm "$@"
+}
+
+node() {
+  _environmart_use_nvm || return 1
+  command node "$@"
+}
+
+npm() {
+  _environmart_use_nvm || return 1
+  command npm "$@"
+}
+
+npx() {
+  _environmart_use_nvm || return 1
+  command npx "$@"
+}
+
+corepack() {
+  _environmart_use_nvm || return 1
+  command corepack "$@"
+}
+
+jwt() {
+  _environmart_use_nvm || return 1
+  command jwt "$@"
+}
+
+_environmart_install_npm_tools() {
+  export NVM_DIR="${NVM_DIR:-${HOME}/.nvm}"
+
+  if [ ! -s "${NVM_DIR}/nvm.sh" ]; then
+    _environmart_install_nvm || return 1
+  else
+    _environmart_load_nvm || return 1
+  fi
+
+  if ! _environmart_has_executable npm; then
+    nvm install --lts --default || return 1
+    nvm use --silent default > /dev/null || return 1
+  fi
+
+  _environmart_has_executable npm || return 1
+
+  if ! command npm ls --global --depth=0 jwt-cli > /dev/null 2>&1; then
+    command npm install --global jwt-cli
+  fi
+}
+
+environmart_refresh_completions() {
+  local cache_file="${ENVIRONMART_COMPLETION_CACHE:-${HOME}/.cache/environmart}/glgroup.bash"
+  local cache_dir="${cache_file%/*}"
+  local temporary_file="${cache_file}.$$"
+
+  _which glgroup || return 0
+  mkdir -p "${cache_dir}" || return 1
+  glgroup bashcomplete > "${temporary_file}" || return 1
+  mv "${temporary_file}" "${cache_file}"
+}
+
+environmart_load_completions() {
+  local cache_file="${ENVIRONMART_COMPLETION_CACHE:-${HOME}/.cache/environmart}/glgroup.bash"
+
+  [ -r "${cache_file}" ] && . "${cache_file}"
+}
+
+_environmart_update_reminder_due() {
+  local days="${ENVIRONMART_UPDATE_REMINDER_DAYS:-14}"
+  local last_update=0
+  local now
+
+  case "${days}" in
+    ''|*[!0-9]*|0) return 1 ;;
+  esac
+
+  if [ -r "${ENVIRONMART_UPDATE_REMINDER_FILE}" ]; then
+    read -r last_update < "${ENVIRONMART_UPDATE_REMINDER_FILE}"
+  fi
+
+  case "${last_update}" in
+    ''|*[!0-9]*) last_update=0 ;;
+  esac
+
+  now="$(date +%s)" || return 1
+  (( now - last_update >= days * 86400 ))
+}
+
+environmart_update_reminder() {
+  _environmart_update_reminder_due || return 0
+
+  printf '%b\n' "${yellowb}Environmart update reminder:${end} run ${lightblue}environmart_update${end} when convenient."
+  _environmart_record_update >/dev/null 2>&1
+}
+
+_environmart_record_update() {
+  local marker="${ENVIRONMART_UPDATE_REMINDER_FILE}"
+  local directory="${marker%/*}"
+  local temporary="${marker}.$$"
+  local now
+
+  [ "${directory}" = "${marker}" ] && directory=.
+  now="$(date +%s)" || return 1
+  mkdir -p "${directory}" || return 1
+  printf '%s\n' "${now}" > "${temporary}" || return 1
+  mv -f "${temporary}" "${marker}"
+}
+
+cat << EOF >> "${ENVIRONMART_HELP_FILE}"
+${blue}
+${white}## Workstation Maintenance
+${blue}
+-   ${white}environmart_install_tools  ${blue}
+    Install missing workstation dependencies
+-   ${white}environmart_update  ${blue}
+    Update Homebrew and managed global tools
+
+EOF
+
+# Install missing workstation dependencies without upgrading existing ones.
+environmart_install_tools() {
+  if [[ "${OSTYPE:-}" == darwin* ]]; then
+    _environmart_install_brew_tools || return 1
+  fi
+
+  _environmart_install_prettyping || return 1
+  _environmart_configure_git || return 1
+  _environmart_install_fzf || return 1
+  _environmart_install_oh_my_zsh || return 1
+  _environmart_install_nvm || return 1
+  _environmart_install_npm_tools || return 1
+  environmart_refresh_completions || return 1
+
+  echo "Environmart tools installed."
+}
+
+# Update Homebrew-managed software only when explicitly requested.
+environmart_update() {
+  if [[ "${OSTYPE:-}" == darwin* ]]; then
+    _environmart_ensure_brew || return 1
+    brew update || return 1
+    brew upgrade || return 1
+    brew upgrade --cask || return 1
+    brew cleanup || return 1
+  fi
+
+  environmart_install_tools || return 1
+
+  if _which npm; then
+    npm update --global jwt-cli || return 1
+  fi
+
+  environmart_refresh_completions || return 1
+  _environmart_record_update || return 1
+}

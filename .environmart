@@ -8,6 +8,9 @@ export DIR_CODE="${HOME}/code"
 export DIR_PERSONAL="${HOME}/code/public"
 export URL_PATH_TO_ENV_FILES="https://raw.githubusercontent.com/mikemartin1090/environmart/master"
 export ENVIRONMART_HELP_FILE="/tmp/.environmart.help.md"
+export ENVIRONMART_COMPLETION_CACHE="${XDG_CACHE_HOME:-${HOME}/.cache}/environmart"
+export ENVIRONMART_UPDATE_REMINDER_DAYS="${ENVIRONMART_UPDATE_REMINDER_DAYS:-14}"
+export ENVIRONMART_UPDATE_REMINDER_FILE="${ENVIRONMART_UPDATE_REMINDER_FILE:-${XDG_STATE_HOME:-${HOME}/.local/state}/environmart/last-update}"
 
 #my go path
 #TODO: maybe move this elsewhere? Tools? I'll need to do something
@@ -16,15 +19,17 @@ export ENVIRONMART_HELP_FILE="/tmp/.environmart.help.md"
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 
-[ -f "${ENVIRONMART_HELP_FILE}" ] && rm "${ENVIRONMART_HELP_FILE}"
+: > "${ENVIRONMART_HELP_FILE}"
 
 ENVIRONMART_FILES_TO_LOAD="${ENVIRONMART_FILES_TO_LOAD:-colors functions aliases tools}"
 
 mkdir -p "${HOME}/run"
-for file in $(echo $ENVIRONMART_FILES_TO_LOAD); do
+for file in $(printf '%s\n' "${ENVIRONMART_FILES_TO_LOAD}"); do
   FILE_CACHE_ALIASES="${HOME}/run/.${file}"
-  [ ! -f "${FILE_CACHE_ALIASES}" ] && curl -s "${URL_PATH_TO_ENV_FILES}/${file}" -o "${FILE_CACHE_ALIASES}"
-  source "${FILE_CACHE_ALIASES}"
+  if [ ! -f "${FILE_CACHE_ALIASES}" ]; then
+    curl -fsSL "${URL_PATH_TO_ENV_FILES}/${file}" -o "${FILE_CACHE_ALIASES}" || return 1
+  fi
+  . "${FILE_CACHE_ALIASES}" || return 1
   echo "${whiteb}$file ${green}Loaded...${end}"
 done
 
@@ -33,5 +38,9 @@ echo ""
 echo "${whiteb}Type ${lightblue}help${whiteb} for more help"
 
 help() {
-  echo -ne $(cat ${ENVIRONMART_HELP_FILE} | sed  's/$/\\n/' | sed 's/ /\\a /g')
+  echo -ne "$(sed 's/$/\\n/' "${ENVIRONMART_HELP_FILE}" | sed 's/ /\\a /g')"
 }
+
+if type environmart_update_reminder > /dev/null 2>&1; then
+  environmart_update_reminder
+fi
