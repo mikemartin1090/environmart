@@ -977,3 +977,29 @@ function get_wiki_repo() {
 
   git clone "$wikiRepo" ../$(basename $PWD).wiki
 }
+
+##########################################################
+## azume - launch the PowerShell Entra helper in a fresh iTerm2 tab
+##########################################################
+# The iTerm2 "PowerShell" profile already launches `pwsh -l -nol`, which loads
+# the PS profile (defining azume + the prompt). We just send `azume` into that
+# interactive session; it stays alive afterward, keeping the process-scoped
+# Graph connection (Connect-MgGraph -ContextScope Process) plus the PROD
+# background/badge. Any args (e.g. -p for PIM, -c for Chrome-only) are forwarded.
+azume() {
+  local cmd="azume $*"
+  osascript >/dev/null 2>&1 <<EOF
+tell application "iTerm2"
+  activate
+  if (count of windows) = 0 then
+    create window with profile "PowerShell"
+    tell current session of current window to write text "${cmd}"
+  else
+    tell current window
+      create tab with profile "PowerShell"
+      tell current session to write text "${cmd}"
+    end tell
+  end if
+end tell
+EOF
+}
